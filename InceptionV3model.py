@@ -1,4 +1,5 @@
 import tensorflow as tf
+from tensorflow.python.keras import layers
 
 class InceptionV3model():
 
@@ -9,17 +10,16 @@ class InceptionV3model():
                      optimizer = tf.keras.optimizers.SGD(lr=0.0001, momentum=0.9), loss ='categorical_crossentropy'):
 
         # create the base pre-trained model
-        base_model = tf.keras.applications.inception_v3(weights = "imagenet",
+        base_model = tf.keras.applications.inception_v3.InceptionV3(weights = "imagenet",
                                                    include_top=False, input_shape = (img_width, img_height, 3))
-
         # add a global spatial average pooling layer
         x = base_model.output
-        x = tf.keras.layers.GlobalAveragePooling2D()(x)
-        x = tf.keras.layers.Dense(1024, activation='relu')(x)
-        predictions = tf.keras.layers(200, activation='softmax')(x)
+        x = layers.GlobalAveragePooling2D()(x)
+        x = layers.Dense(1024, activation='relu')(x)
+        predictions = layers.Dense(200, activation='softmax')(x)
 
         # final model
-        model = tf.keras.models(inputs=base_model.input, outputs=predictions)
+        model = tf.keras.models.Model(inputs=base_model.input, outputs=predictions)
 
         # freeze layers for transfer learning
         for layer in model.layers[:num_freezedLayers]:
