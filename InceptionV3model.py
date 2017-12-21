@@ -7,7 +7,7 @@ class InceptionV3model():
         super(self).__init__()
 
     def create_model(self, num_freezedLayers = 249, img_width= 256, img_height = 256,
-                     optimizer = tf.keras.optimizers.SGD(lr=0.0001, momentum=0.9), loss ='categorical_crossentropy'):
+                     optimizer = tf.keras.optimizers.SGD(lr=0.0001, momentum=0.9), loss ='binary_crossentropy'):
 
         # create the base pre-trained model
         base_model = tf.keras.applications.inception_v3.InceptionV3(weights = "imagenet",
@@ -16,7 +16,7 @@ class InceptionV3model():
         x = base_model.output
         x = layers.GlobalAveragePooling2D()(x)
         x = layers.Dense(1024, activation='relu')(x)
-        predictions = layers.Dense(200, activation='softmax')(x)
+        predictions = layers.Dense(9, activation='sigmoid')(x)
 
         # final model
         model = tf.keras.models.Model(inputs=base_model.input, outputs=predictions)
