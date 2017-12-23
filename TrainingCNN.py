@@ -1,22 +1,43 @@
 import tensorflow as tf
+import utility
+import numpy as np
+from tensorflow.python.keras.preprocessing.image import ImageDataGenerator
 from .InceptionV3model import InceptionV3model
 from .XceptionModel import XceptionModel
 
-# Define input function
-def imgs_input_fn(filenames, labels=None, perform_shuffle=None, repeat_count=1, batch_size=1):
-    # Labels=None for interferences. If label=True and training also shuffle the data!!!
-    batch_features, batch_labels = 1,1
-    return batch_features, batch_labels
+def apply_mean(image_data_generator):
+    """Subtracts the dataset mean"""
+    image_data_generator.mean = np.array([103.939, 116.779, 123.68], dtype=np.float32).reshape((3, 1, 1))
 
-# Test input function
-next_batch = imgs_input_fn(test_files, labels=test_labels, perform_shuffle=True, batch_size=20)
-with tf.Session() as sess:
-    first_batch = sess.run(next_batch)
-x_d = first_batch[0]['input_1']
+train_dir = 'test'
+valid_dir = 'val'
+img_width, img_height = 299, 299
+batch_size = 16
+classes = "" # to implement
 
-print(x_d.shape)
-img = image.array_to_img(x_d[8])
-img.show()
+
+# Training data
+train_datagen = ImageDataGenerator(rotation_range=30.,
+                                   shear_range=0.2,
+                                   zoom_range=0.2,
+                                   horizontal_flip=True,
+                                   preprocessing_function = utility.preprocess_input())
+apply_mean(train_datagen)
+training_data = train_datagen.flow_from_directory(
+        train_dir,
+        target_size=(img_width, img_height),
+        batch_size = batch_size,
+        classes = classes)
+
+# Validation data
+validation_datagen = ImageDataGenerator(preprocessing_function = utility.preprocess_input())
+apply_mean(validation_datagen)
+validation_data = validation_datagen.flow_from_directory(
+        valid_dir,
+        target_size=(img_width, img_height),
+        batch_size = batch_size,
+        classes = classes)
+
 
 # Do to: Do following in a grid search  for hyper parameter tuning
 
@@ -29,22 +50,23 @@ for num_freezedLayers in num_freezedLayersArray:
     for lr in learning_rates:
 
         # Create Optimizer
-        optimizerSGD = tf.keras.optimizers.SGD(lr=0.0001, momentum=0.9)
-        optimizerAdam = tf.keras.optimizers.Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0,)
+        optimizerSGD = tf.keras.optimizers.SGD(lr=lr, momentum=0.9)
+        optimizerAdam = tf.keras.optimizers.Adam(lr=lr, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0,)
 
         # Create model
         model = InceptionV3model().create_model(num_freezedLayers=num_freezedLayers, optimizer=optimizerSGD)
-        estimator_model = tf.keras.estimator.model_to_estimator(keras_model= model)
 
-        # Training
-        train_spec = tf.estimator.TrainSpec(input_fn=lambda: imgs_input_fn(test_files,
-                                                                           labels=test_labels,
-                                                                           perform_shuffle=True,
-                                                                           repeat_count=5,
-                                                                           batch_size=20), max_steps=500)
-        eval_spec = tf.estimator.EvalSpec(input_fn=lambda: imgs_input_fn(test_files,
-                                                                         labels=test_labels,
-                                                                         perform_shuffle=False,
-                                                                         batch_size=1))
+        tf.keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, batch_size=32, write_graph=True,
+                                    write_grads=False, write_images=False, embeddings_freq=0,
+                                    embeddings_layer_names=None, embeddings_metadata=None)
 
-        tf.estimator.train_and_evaluate(estimator_model, train_spec, eval_spec)
+        model.fit_generator(training_data,
+                            steps_per_epoch=1,  # nb_train_samples,
+                            epochs=1,
+                            validation_data=validation_data,
+                            validation_steps=1,  # nb_validation_samples,
+                            )
+
+        model.save("Model Inception num_freezedLayers %d lr %f" (num_freezedLayers, lr))
+        model.sample_weights("Model Inception num_freezedLayers %d lr %f" (num_freezedLayers, lr))
+

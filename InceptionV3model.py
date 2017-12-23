@@ -6,7 +6,7 @@ class InceptionV3model():
     def __init__(self):
         super(InceptionV3model, self).__init__()
 
-    def create_model(self, num_freezedLayers=249, img_width=256, img_height=256, num_classes=9,name_fclayer="fc1",
+    def create_model(self, num_freezedLayers=249, img_width=299, img_height=299, num_classes=9,name_fclayer="fc1",
                      optimizer=tf.keras.optimizers.SGD(lr=0.0001, momentum=0.9), loss ='binary_crossentropy'):
 
         # create the base pre-trained model
