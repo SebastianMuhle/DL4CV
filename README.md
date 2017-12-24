@@ -15,6 +15,9 @@ https://depends-on-the-definition.com/guide-to-multi-label-multi-class-classific
 More in depth transfer learning with Keras
 https://github.com/fchollet/deep-learning-with-python-notebooks/blob/master/5.3-using-a-pretrained-convnet.ipynb
 
+CSV Import
+https://www.kaggle.com/dstraat/cnn-with-keras-and-augmented-images
+
 To Do:
 - input
 - tensorboard?

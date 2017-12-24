@@ -1,20 +1,38 @@
 import tensorflow as tf
 import utility
 import numpy as np
+import pandas as pd
 from tensorflow.python.keras.preprocessing.image import ImageDataGenerator
 from .InceptionV3model import InceptionV3model
+from sklearn.model_selection import train_test_split
+from tensorflow.python.keras.utils import to_categorical
+from sklearn.utils import shuffle
 from .XceptionModel import XceptionModel
 
 def apply_mean(image_data_generator):
     """Subtracts the dataset mean"""
     image_data_generator.mean = np.array([103.939, 116.779, 123.68], dtype=np.float32).reshape((3, 1, 1))
 
-train_dir = 'test'
-valid_dir = 'val'
+train = pd.read_csv('../input/train.csv') # change it
+test=pd.read_csv('../input/test.csv') # change it
+# train=shuffle(train) maybe we shouldn't add to this, to make different results comparable!
+# only use 50% of training set
+train =train[:int(train.shape[0]*0.5)]
+
+# Check and change the following part!
+labels= train.label                     # save the target column for later use
+train = train.drop(['label'], axis=1)   # drop label column from data set
+colnames=list(train)                    # save the columnnames
+
+# split train in train and validation
+train, validation, labels, labelsvalidation = train_test_split(train, labels, test_size=0.25, random_state=42)
+
+# one hot encoding on labels - change it to multi labels!
+labels=to_categorical(labels)
+labelsvalidation=to_categorical(labelsvalidation)
+
 img_width, img_height = 299, 299
 batch_size = 16
-classes = "" # to implement
-
 
 # Training data
 train_datagen = ImageDataGenerator(rotation_range=30.,
@@ -23,20 +41,20 @@ train_datagen = ImageDataGenerator(rotation_range=30.,
                                    horizontal_flip=True,
                                    preprocessing_function = utility.preprocess_input())
 apply_mean(train_datagen)
-training_data = train_datagen.flow_from_directory(
-        train_dir,
+training_data = train_datagen.flow(
+        train,
         target_size=(img_width, img_height),
         batch_size = batch_size,
-        classes = classes)
+        classes = labels)
 
 # Validation data
 validation_datagen = ImageDataGenerator(preprocessing_function = utility.preprocess_input())
 apply_mean(validation_datagen)
-validation_data = validation_datagen.flow_from_directory(
-        valid_dir,
+validation_data = validation_datagen.flow(
+        validation,
         target_size=(img_width, img_height),
         batch_size = batch_size,
-        classes = classes)
+        classes = labels)
 
 
 # Do to: Do following in a grid search  for hyper parameter tuning
@@ -66,6 +84,9 @@ for num_freezedLayers in num_freezedLayersArray:
                             validation_data=validation_data,
                             validation_steps=1,  # nb_validation_samples,
                             )
+
+        # and predict on the test set
+        predictions = model.predict_classes(test)
 
         model.save("Model Inception num_freezedLayers %d lr %f" (num_freezedLayers, lr))
         model.sample_weights("Model Inception num_freezedLayers %d lr %f" (num_freezedLayers, lr))
