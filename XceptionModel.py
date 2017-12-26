@@ -1,6 +1,7 @@
 import tensorflow as tf
 from tensorflow.python.keras import layers
 
+
 class XceptionModel():
 
     def __init__(self):
