@@ -90,6 +90,6 @@ for num_freezed_layers in num_freezed_layers_array:
         # and predict on the test set
         predictions = model.predict_classes(test)
 
-        save_string = "Model Inception num_freezedLayers %d lr %f" % (num_freezed_layers, lr)
+        save_string = "Model_Inception_num_freezedLayers_%d_lr_%f" % (num_freezed_layers, lr)
         model.save(save_string)
-        model.sample_weights(save_string)
+        model.save_weights(save_string)
