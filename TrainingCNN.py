@@ -14,13 +14,42 @@ def apply_mean(image_data_generator):
     """Subtracts the dataset mean"""
     image_data_generator.mean = np.array([103.939, 116.779, 123.68], dtype=np.float32).reshape((3, 1, 1))
 
+def csv_to_lists(csv_file_name, sep=','):
+    # parse csv
+    df = pd.read_csv(csv_file_name, sep=sep)
+    # change csv to list
+    values_list = df.values.tolist()
+    X = []
+    y = []
+    # parse training list and create x_train and y_train lists
+    for element in values_list:
+        X.append(element[0])
+        if type(element[1]) is str:
+            y.append(list(map(int, element[1].split())))
+        else:
+            # added -1 for no classes
+            y.append(-1)
 
-train = pd.read_csv('train.csv', sep=';') #added the sep argument cause I converted the us-csv to an eu-csv
+    X = np.array(X)
+    y = np.array(y)
+    return X, y
+
+
+classes = ['good_for_lunch', 'good_for_dinner', 'takes_reservations', 'outdoor_seating', 'restaurant_is_expensive',
+               'has_alcohol', 'has_table_service', 'ambience_is_classy', 'good_for_kids']
+x_train, y_train = csv_to_lists('train.csv')
+print(x_train)
+print(y_train)
+
+#TODO: The below code should be changed accordingly.
+
+
+
 #test=pd.read_csv('../input/test.csv') # change it
 # train=shuffle(train) maybe we shouldn't add to this, to make different results comparable!
 # only use 50% of training set
-train = train[:int(train.shape[0]*0.5)]
-print(train)
+# train = train[:int(train.shape[0]*0.5)]
+# print(train)
 
 # Check and change the following part!
 labels = train['labels']                    # save the target column for later use
