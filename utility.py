@@ -22,13 +22,13 @@ def preprocess_input(x):
     return x
 
 
-def save_string(selfs, num_freezed_layers, lr):
+def save_string( num_freezed_layers, lr):
     current_date = '{:%d.%m.%Y %H:%M:%S}'.format(datetime.datetime.now())
-    save_string = current_date + "_Inception_num_freezedLayers_%d _r_%g" % (num_freezed_layers, lr)
-    save_string_return = save_string.replace(" ", "_")
+    save_string1 = current_date + "_Inception_num_freezedLayers_%d _r_%g" % (num_freezed_layers, lr)
+    save_string_return = save_string1.replace(" ", "_")
     save_string_return = save_string_return.replace(":", "_")
     save_string_return = save_string_return.replace(".", "_")
-    save_string_return = save_string_return +".h5"
+    save_string_return = save_string_return + ".h5"
     return save_string_return
 
 
