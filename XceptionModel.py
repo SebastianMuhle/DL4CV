@@ -2,13 +2,15 @@ import tensorflow as tf
 from tensorflow.python.keras import layers
 
 
-class XceptionModel():
+class XCeptionModel:
 
     def __init__(self):
-        super(self).__init__()
+        super(XCeptionModel, self).__init__()
 
-    def create_model(self, num_freezedLayers = 249, img_width= 299, img_height = 299, num_classes = 9,name_fclayer = "fc1",
-                     optimizer = tf.keras.optimizers.SGD(lr=0.0001, momentum=0.9), loss ='binary_crossentropy'):
+    @staticmethod
+    def create_model(num_freezedLayers=249, img_width=299, img_height=299, nb_classes=9, name_fclayer="fc1",
+                     noveltyDetectionLayerSize=1024,
+                     optimizer=tf.keras.optimizers.SGD(lr=0.0001, momentum=0.9), loss='binary_crossentropy'):
 
         # create the base pre-trained model
         base_model = tf.keras.applications.xception.Xception(weights = "imagenet",
@@ -16,8 +18,8 @@ class XceptionModel():
         # add a global spatial average pooling layer
         x = base_model.output
         x = layers.GlobalAveragePooling2D()(x)
-        x = layers.Dense(1024, activation='relu', name = name_fclayer)(x)
-        predictions = layers.Dense(num_classes, activation='sigmoid')(x)
+        x = layers.Dense(noveltyDetectionLayerSize, activation='relu', name = name_fclayer)(x)
+        predictions = layers.Dense(nb_classes, activation='sigmoid')(x)
 
         # final model
         model = tf.keras.models.Model(inputs=base_model.input, outputs=predictions)
@@ -32,4 +34,5 @@ class XceptionModel():
         model.compile(optimizer=optimizer, loss=loss)
 
         return model
+
 

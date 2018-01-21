@@ -4,14 +4,11 @@ import tensorflow as tf
 from tensorflow.python.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.python.keras.utils import to_categorical
 from InceptionV3model import InceptionV3model
-from XceptionModel import XceptionModel
+from XceptionModel import XCeptionModel
+from VGG16 import VGG16Model
 from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
 
-
-def apply_mean(image_data_generator):
-    """Subtracts the dataset mean"""
-    image_data_generator.mean = np.array([103.939, 116.779, 123.68], dtype=np.float32).reshape((3, 1, 1))
 
 
 classes = ['good_for_lunch', 'good_for_dinner', 'takes_reservations', 'outdoor_seating', 'restaurant_is_expensive',
@@ -47,6 +44,7 @@ y_validation = utility.to_multi_label_categorical(y_validation)
 print(y_train)
 print(y_validation)
 
+# Xception 299, 299 - VGG16 224, 224
 img_width, img_height = 299, 299
 batch_size = 16
 
@@ -55,9 +53,9 @@ train_datagen = ImageDataGenerator(rotation_range=30.,
                                    shear_range=0.2,
                                    zoom_range=0.2,
                                    horizontal_flip=True,
-                                   preprocessing_function = utility.preprocess_input)
+                                   preprocessing_function=utility.preprocess_input)
 
-apply_mean(train_datagen)
+utility.apply_mean(train_datagen)
 training_data = train_datagen.flow(
         x_train
         # ,target_size=(img_width, img_height)
@@ -66,8 +64,8 @@ training_data = train_datagen.flow(
         )
 
 # Validation data
-validation_datagen = ImageDataGenerator(preprocessing_function = utility.preprocess_input)
-apply_mean(validation_datagen)
+validation_datagen = ImageDataGenerator(preprocessing_function=utility.preprocess_input)
+utility.apply_mean(validation_datagen)
 validation_data = train_datagen.flow(
         x_validation
         # ,target_size=(img_width, img_height)
@@ -76,8 +74,9 @@ validation_data = train_datagen.flow(
         )
 
 # Hyperparameters
-num_freezed_layers_array=[5, 80, 249]
-learning_rates=[0.01, 0.001, 0.0001]
+num_freezed_layers_array =[5, 80, 249]
+learning_rates = [0.01, 0.001, 0.0001]
+nb_classes = 9
 
 # Hyperparameter search
 for num_freezed_layers in num_freezed_layers_array:
@@ -91,7 +90,8 @@ for num_freezed_layers in num_freezed_layers_array:
         optimizerAdam = tf.keras.optimizers.Adam(lr=lr, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0,)
 
         # Create model
-        model = InceptionV3model().create_model(num_freezedLayers=num_freezed_layers, optimizer=optimizerSGD)
+        model = InceptionV3model().create_model(num_freezedLayers=num_freezed_layers, nb_classes=nb_classes,
+                                                optimizer=optimizerSGD)
 
         tbCallBack = tf.keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, batch_size=32, write_graph=True,
                                     write_grads=False, write_images=False,

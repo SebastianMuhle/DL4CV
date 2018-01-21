@@ -2,18 +2,18 @@ import tensorflow as tf
 from tensorflow.python.keras import layers
 
 
-class InceptionV3model:
+class VGG16Model:
 
     def __init__(self):
-        super(InceptionV3model, self).__init__()
+        super(VGG16Model, self).__init__()
 
     @staticmethod
-    def create_model(num_freezedLayers=80, img_width=299, img_height=299, nb_classes=9, name_fclayer="fc1",
+    def create_model(num_freezedLayers=16, img_width=224, img_height=244, nb_classes=9, name_fclayer="fc1",
                      noveltyDetectionLayerSize=1024,
                      optimizer=tf.keras.optimizers.SGD(lr=0.0001, momentum=0.9), loss='binary_crossentropy'):
 
         # create the base pre-trained model
-        base_model = tf.keras.applications.inception_v3.InceptionV3(weights="imagenet",
+        base_model = tf.keras.applications.VGG16(weights = "imagenet",
                                                    include_top=False, input_shape=(img_width, img_height, 3))
         # add a global spatial average pooling layer
         x = base_model.output

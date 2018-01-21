@@ -2,6 +2,7 @@ from tensorflow.python.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.python.keras.utils import to_categorical
 import pandas as pd
 import numpy as np
+import datetime
 
 
 # for model.fit function -> keras description
@@ -20,6 +21,7 @@ def preprocess_input(x):
     x *= 2.
     return x
 
+
 def save_string(selfs, num_freezed_layers, lr):
     current_date = '{:%d.%m.%Y %H:%M:%S}'.format(datetime.datetime.now())
     save_string = current_date + "_Inception_num_freezedLayers_%d _r_%g" % (num_freezed_layers, lr)
@@ -28,6 +30,7 @@ def save_string(selfs, num_freezed_layers, lr):
     save_string_return = save_string_return.replace(".", "_")
     save_string_return = save_string_return +".h5"
     return save_string_return
+
 
 def csv_to_lists(csv_file_name, sep=','):
     # parse csv
@@ -50,9 +53,15 @@ def csv_to_lists(csv_file_name, sep=','):
     y = np.array(y)
     return X, y
 
+
 def to_multi_label_categorical(labels, dimension = 9):
     results = np.zeros((len(labels),dimension))
     for i in range(len(labels)):
         temp = to_categorical(labels[i],num_classes=dimension)
         results[i] = np.sum(temp, axis=0)
     return results
+
+
+def apply_mean(image_data_generator):
+    """Subtracts the dataset mean"""
+    image_data_generator.mean = np.array([103.939, 116.779, 123.68], dtype=np.float32).reshape((3, 1, 1))
