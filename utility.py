@@ -1,4 +1,7 @@
 from tensorflow.python.keras.preprocessing.image import ImageDataGenerator
+from tensorflow.python.keras.utils import to_categorical
+import pandas as pd
+import numpy as np
 
 
 # for model.fit function -> keras description
@@ -26,3 +29,30 @@ def save_string(selfs, num_freezed_layers, lr):
     save_string_return = save_string_return +".h5"
     return save_string_return
 
+def csv_to_lists(csv_file_name, sep=','):
+    # parse csv
+    df = pd.read_csv(csv_file_name, sep=sep)
+    # change csv to list
+    values_list = df.values.tolist()
+    X = []
+    y = []
+    # parse training list and create x_train and y_train lists
+    for element in values_list:
+        X.append(element[0])
+        # if that list does contain anything
+        if type(element[1]) is str:
+            y.append(list(map(int, element[1].split())))
+        # if that list doesn't contain anything
+        else:
+            y.append([])
+
+    X = np.array(X)
+    y = np.array(y)
+    return X, y
+
+def to_multi_label_categorical(labels, dimension = 9):
+    results = np.zeros((len(labels),dimension))
+    for i in range(len(labels)):
+        temp = to_categorical(labels[i],num_classes=dimension)
+        results[i] = np.sum(temp, axis=0)
+    return results

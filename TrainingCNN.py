@@ -1,6 +1,5 @@
 import utility
 import numpy as np
-import pandas as pd
 import tensorflow as tf
 from tensorflow.python.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.python.keras.utils import to_categorical
@@ -15,24 +14,38 @@ def apply_mean(image_data_generator):
     image_data_generator.mean = np.array([103.939, 116.779, 123.68], dtype=np.float32).reshape((3, 1, 1))
 
 
-train = pd.read_csv('train.csv', sep=';') #added the sep argument cause I converted the us-csv to an eu-csv
+classes = ['good_for_lunch', 'good_for_dinner', 'takes_reservations', 'outdoor_seating', 'restaurant_is_expensive',
+               'has_alcohol', 'has_table_service', 'ambience_is_classy', 'good_for_kids']
+
+# csv to list in utility.py
+x_learning, y_learning = utility.csv_to_lists('train.csv')
+
+
+#TODO: The below code should be changed accordingly.
+
+
+
 #test=pd.read_csv('../input/test.csv') # change it
 # train=shuffle(train) maybe we shouldn't add to this, to make different results comparable!
 # only use 50% of training set
-train = train[:int(train.shape[0]*0.5)]
-print(train)
+# train = train[:int(train.shape[0]*0.5)]
+# print(train)
 
-# Check and change the following part!
-labels = train['labels']                    # save the target column for later use
-train = train.drop(['labels'], axis=1)   # drop label column from data set
-colnames = list(train)                    # save the columnnames
+# # Check and change the following part!
+# labels = train['labels']                    # save the target column for later use
+# train = train.drop(['labels'], axis=1)   # drop label column from data set
+# colnames = list(train)                    # save the columnnames
 
 # split train in train and validation
-train, validation, labels, labelsvalidation = train_test_split(train, labels, test_size=0.25, random_state=42)
+x_train, x_validation, y_train, y_validation = train_test_split(x_learning, y_learning, test_size=0.25, random_state=42)
 
 # one hot encoding on labels - change it to multi labels!
-labels = to_categorical(labels)
-labelsvalidation = to_categorical(labelsvalidation)
+# Haydar: Since to_categorical is for one class, I have impelemented a function for multi_label in utility.py
+y_train = utility.to_multi_label_categorical(y_train)
+y_validation = utility.to_multi_label_categorical(y_validation)
+
+print(y_train)
+print(y_validation)
 
 img_width, img_height = 299, 299
 batch_size = 16
@@ -42,23 +55,25 @@ train_datagen = ImageDataGenerator(rotation_range=30.,
                                    shear_range=0.2,
                                    zoom_range=0.2,
                                    horizontal_flip=True,
-                                   preprocessing_function = utility.preprocess_input())
+                                   preprocessing_function = utility.preprocess_input)
+
 apply_mean(train_datagen)
 training_data = train_datagen.flow(
-        train,
-        #target_size=(img_width, img_height),
-        batch_size = batch_size,
-        #classes = labels)
+        x_train
+        # ,target_size=(img_width, img_height)
+        ,batch_size = batch_size
+        # ,classes = y_train
+        )
 
 # Validation data
-validation_datagen = ImageDataGenerator(preprocessing_function = utility.preprocess_input))
+validation_datagen = ImageDataGenerator(preprocessing_function = utility.preprocess_input)
 apply_mean(validation_datagen)
-validation_data = validation_datagen.flow(
-        validation,
-        #target_size=(img_width, img_height),
-        batch_size = batch_size,
-        #classes = labels
-     )
+validation_data = train_datagen.flow(
+        x_validation
+        # ,target_size=(img_width, img_height)
+        ,batch_size = batch_size
+        # ,classes = y_validation
+        )
 
 # Hyperparameters
 num_freezed_layers_array=[5, 80, 249]
