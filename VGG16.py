@@ -8,7 +8,7 @@ class VGG16Model:
         super(VGG16Model, self).__init__()
 
     @staticmethod
-    def create_model(num_freezedLayers=16, img_width=224, img_height=244, nb_classes=9, name_fclayer="fc1",
+    def create_model(num_freezedLayers=16, img_width=224, img_height=224, nb_classes=9, name_fclayer="fc1",
                      noveltyDetectionLayerSize=1024,
                      optimizer=tf.keras.optimizers.SGD(lr=0.0001, momentum=0.9), loss='binary_crossentropy'):
 
