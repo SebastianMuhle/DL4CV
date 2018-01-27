@@ -1,52 +1,69 @@
 import utility
 import numpy as np
 import tensorflow as tf
-from tensorflow.python.keras.preprocessing.image import ImageDataGenerator
+import pandas as pd
+from tensorflow.python.keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
 from tensorflow.python.keras.utils import to_categorical
 from InceptionV3model import InceptionV3model
 from XceptionModel import XCeptionModel
 from VGG16 import VGG16Model
 from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
+from PIL import Image
+import h5py
 
+train_data_root = 'data/train/'
+val_data_root = 'data/validation/'
 
+# Image Parameters
+# Xception 299, 299 - VGG16 224, 224
+img_width, img_height = 224, 224
+img_shape = (img_width,img_height,3)
+batch_size = 16
+
+#DL Parameters
+batch_size = 16
 
 classes = ['good_for_lunch', 'good_for_dinner', 'takes_reservations', 'outdoor_seating', 'restaurant_is_expensive',
                'has_alcohol', 'has_table_service', 'ambience_is_classy', 'good_for_kids']
+nb_classes = 9
+
 
 # csv to list in utility.py
-x_learning, y_learning = utility.csv_to_lists('train.csv')
+train_business_labels = pd.read_csv(train_data_root+'train.csv')
+train_photo_business = pd.read_csv(train_data_root+'train_photo_to_biz_ids.csv')
 
+train_business_labels.dropna(inplace=True)
 
-#TODO: The below code should be changed accordingly.
+train = pd.merge(train_photo_business,train_business_labels, on="business_id")
 
+train['file'] = train_data_root + 'vgg16_photos/'+ train['photo_id'].map(str) + '.jpg'
 
+for i in range(len(classes)):
+  train[classes[i]] = train['labels'].str.contains(str(i)).astype(int)
 
-#test=pd.read_csv('../input/test.csv') # change it
-# train=shuffle(train) maybe we shouldn't add to this, to make different results comparable!
-# only use 50% of training set
-# train = train[:int(train.shape[0]*0.5)]
-# print(train)
+photo_to_class = dict(zip(train['file'].tolist(),train.ix[:,4:].values.tolist()))
 
-# # Check and change the following part!
-# labels = train['labels']                    # save the target column for later use
-# train = train.drop(['labels'], axis=1)   # drop label column from data set
-# colnames = list(train)                    # save the columnnames
+image_urls = train['file'].tolist()
+image_urls = image_urls
+x_learning = np.zeros((len(image_urls), img_width,img_height,3), dtype=np.uint8)
+y_learning = np.zeros((len(image_urls), nb_classes), dtype=np.uint8)
+
+# This takes a while
+for i in range(len(image_urls)):
+    img = Image.open(image_urls[i])
+    x_learning[i] = img_to_array(img)
+    y_learning[i] = photo_to_class[image_urls[i]]
+    if (i%100 == 0):
+        print(i)
 
 # split train in train and validation
 x_train, x_validation, y_train, y_validation = train_test_split(x_learning, y_learning, test_size=0.25, random_state=42)
 
-# one hot encoding on labels - change it to multi labels!
-# Haydar: Since to_categorical is for one class, I have impelemented a function for multi_label in utility.py
-y_train = utility.to_multi_label_categorical(y_train)
-y_validation = utility.to_multi_label_categorical(y_validation)
-
-print(y_train)
-print(y_validation)
-
-# Xception 299, 299 - VGG16 224, 224
-img_width, img_height = 299, 299
-batch_size = 16
+print(x_train.shape)
+print(y_train.shape)
+print(x_validation.shape)
+print(y_validation.shape)
 
 # Training data
 train_datagen = ImageDataGenerator(rotation_range=30.,
@@ -56,27 +73,23 @@ train_datagen = ImageDataGenerator(rotation_range=30.,
                                    preprocessing_function=utility.preprocess_input)
 
 utility.apply_mean(train_datagen)
-training_data = train_datagen.flow(
-        x_train
-        # ,target_size=(img_width, img_height)
-        ,batch_size = batch_size
-        # ,classes = y_train
-        )
+
+training_generator = train_datagen.flow(x_train,
+								y_train,
+								batch_size = batch_size)
 
 # Validation data
 validation_datagen = ImageDataGenerator(preprocessing_function=utility.preprocess_input)
+
 utility.apply_mean(validation_datagen)
-validation_data = train_datagen.flow(
-        x_validation
-        # ,target_size=(img_width, img_height)
-        ,batch_size = batch_size
-        # ,classes = y_validation
-        )
+
+validation_generator = validation_datagen.flow(x_validation,
+										y_validation,
+										batch_size = batch_size)
 
 # Hyperparameters
 num_freezed_layers_array =[5, 80, 249]
 learning_rates = [0.01, 0.001, 0.0001]
-nb_classes = 9
 
 # Hyperparameter search
 for num_freezed_layers in num_freezed_layers_array:
@@ -90,7 +103,7 @@ for num_freezed_layers in num_freezed_layers_array:
         optimizerAdam = tf.keras.optimizers.Adam(lr=lr, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0,)
 
         # Create model
-        model = InceptionV3model().create_model(num_freezedLayers=num_freezed_layers, nb_classes=nb_classes,
+        model = VGG16Model().create_model(num_freezedLayers=num_freezed_layers, nb_classes=nb_classes,
                                                 optimizer=optimizerSGD)
 
         tbCallBack = tf.keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, batch_size=32, write_graph=True,
@@ -98,11 +111,11 @@ for num_freezed_layers in num_freezed_layers_array:
                                     #embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None
                                         )
 
-        model.fit_generator(training_data,
+        model.fit_generator(training_generator,
                             steps_per_epoch=1,  # nb_train_samples,
                             epochs=1,
-                            validation_data=validation_data,
-                            validation_steps=1,  # nb_validation_samples,
+                            validation_data=validation_generator,
+                            validation_steps=1  # nb_validation_samples,
                             )
 
         # and predict on the test set
