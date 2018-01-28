@@ -63,7 +63,7 @@ for i in range(len(image_urls)):
 print(x_learning.shape)
 print(y_learning.shape)
 
-f = h5py.File(train_data_root+"incetion_learning_data.hdf5","w")
+f = h5py.File(train_data_root+"inception_learning_data.hdf5","w")
 x_set = f.create_dataset("x_learning", data=x_learning)
 y_set = f.create_dataset("y_learning", data=y_learning)
 	
