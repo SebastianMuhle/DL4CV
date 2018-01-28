@@ -28,17 +28,18 @@ classes = ['good_for_lunch', 'good_for_dinner', 'takes_reservations', 'outdoor_s
                'has_alcohol', 'has_table_service', 'ambience_is_classy', 'good_for_kids']
 nb_classes = 9
 
+print("Opening HDF5 file")
+
 f = h5py.File(train_data_root+"vgg16_learning_data.hdf5","r")
 x_learning = f['x_learning'][:]
 y_learning = f['y_learning'][:]
 
+print("Read HDF5 file")
+
+print("Splitting the Learning Data to Training and Validation")
 # split train in train and validation
 x_train, x_validation, y_train, y_validation = train_test_split(x_learning, y_learning, test_size=0.25, random_state=42)
-
-print(x_train.shape)
-print(y_train.shape)
-print(x_validation.shape)
-print(y_validation.shape)
+print("Splitted the Learning Data to Training and Validation")
 
 # Training data
 train_datagen = ImageDataGenerator(rotation_range=30.,
