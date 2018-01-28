@@ -19,7 +19,7 @@ val_data_root = 'data/validation/'
 
 # Image Parameters
 # Xception 299, 299 - VGG16 224, 224
-img_width, img_height = 224, 224
+img_width, img_height = 299, 299
 img_size = img_width * img_height * 3
 img_shape = (img_width,img_height,3)
 
@@ -47,7 +47,7 @@ for i in range(len(classes)):
 photo_to_class = dict(zip(train['file'].tolist(),train.ix[:,4:].values.tolist()))
 
 image_urls = train['file'].tolist()
-# image_urls = image_urls[:100]
+image_urls = image_urls[:100]
 x_learning = np.zeros((len(image_urls), img_width,img_height,3), dtype=np.uint8)
 y_learning = np.zeros((len(image_urls), nb_classes), dtype=np.uint8)
 
@@ -63,7 +63,7 @@ for i in range(len(image_urls)):
 print(x_learning.shape)
 print(y_learning.shape)
 
-f = h5py.File(train_data_root+"inception_learning_data.hdf5","w")
+f = h5py.File(train_data_root+"incetion_learning_data.hdf5","w")
 x_set = f.create_dataset("x_learning", data=x_learning)
 y_set = f.create_dataset("y_learning", data=y_learning)
 	
