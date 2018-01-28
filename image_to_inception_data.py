@@ -47,7 +47,7 @@ for i in range(len(classes)):
 photo_to_class = dict(zip(train['file'].tolist(),train.ix[:,4:].values.tolist()))
 
 image_urls = train['file'].tolist()
-image_urls = image_urls[:100]
+# image_urls = image_urls[:100]
 x_learning = np.zeros((len(image_urls), img_width,img_height,3), dtype=np.uint8)
 y_learning = np.zeros((len(image_urls), nb_classes), dtype=np.uint8)
 
