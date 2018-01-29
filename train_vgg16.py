@@ -118,10 +118,10 @@ for num_freezed_layers in num_freezed_layers_array:
 
         predict = model.predict_generator(training_generator, x_train.shape[0]/batch_size)
 
-        accuracy = 0
+        accuracy_arr = np.zeros((len(training_multilabel_datagen.directory_generator.filenames)))
         for i, n in enumerate(training_multilabel_datagen.directory_generator.filenames):
-            accuracy += f1_score(photo_name_to_label_dict.train_photo_to_label_dict[n],predict[i])
-        accuracy /= len(training_generator.filenames)
+            accuracy_arr[i] = f1_score(training_multilabel_datagen.photo_name_to_label_dict[n],predict[i])
+        accuracy = np.mean(accuracy_arr)
         print("F1 Score: ",accuracy)
 
         model.save(save_string)
