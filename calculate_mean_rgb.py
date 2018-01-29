@@ -60,8 +60,8 @@ for i in range(len(x_learning)):
 	if i %100 == 0 :
 		print(i)
 	
-r_mean = np.mean(r)
-g_mean = np.mean(g)
-b_mean = np.mean(b)
-	
+r_mean = np.mean(r_means)
+g_mean = np.mean(g_means)
+b_mean = np.mean(b_means)
 
+print(r_mean,g_mean,b_mean)
