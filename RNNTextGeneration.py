@@ -24,8 +24,26 @@ class RNNTextGeneration:
     model.load_weights(filename)
     model.compile(loss='categorical_crossentropy', optimizer='adam')
 
-    def generateText(self, threshold, lengthOfSequence):
-        completeReview = "Finish"
+    # Prediction text pieces
+    predictionTextPieces = ["good_for_lunch",
+                            "good_for_dinner",
+                            "takes_reservations",
+                            "outdoor_seating",
+                            "restaurant_is_expensive",
+                            "has_alcohol",
+                            "has_table_service",
+                            "ambience_is_classy",
+                            "good_for_kids"]
+    
+
+    def generateText(self, predictions, threshold, lengthOfSequence):
+        completeReview = ""
+        for i in range(predictions):
+            if predictions[i] > threshold:
+                predictedText = self.generateTextintern(predictedText[i], lengthOfSequence)
+                completeReview = completeReview + predictedText
+        return completeReview
+        #maybe a safe function to append the complete review into a text file
 
     def generateTextintern(self, sentence, lengthOfSequence):
         # Turns the sentence into integer for the model
