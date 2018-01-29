@@ -7,7 +7,7 @@ from tensorflow.python.keras.utils import to_categorical
 from InceptionV3model import InceptionV3model
 from XceptionModel import XCeptionModel
 from VGG16 import VGG16Model
-from Metrics import Metrics
+from sklearn.metrics import f1_score
 from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
 from PIL import Image
@@ -81,8 +81,6 @@ validation_generator = utility.multilabel_flow(photo_root,
 num_freezed_layers_array =[14,16,18,20]
 learning_rates = [0.01,0.001,0.0001]
 
-metrics = Metrics()
-
 # Hyperparameter search
 for num_freezed_layers in num_freezed_layers_array:
     for lr in learning_rates:
@@ -112,9 +110,14 @@ for num_freezed_layers in num_freezed_layers_array:
                             callbacks=[metrics]
                             )
 
-        # and predict on the test set
-        # accuracy = model.evaluate_generator(training_generator, x_train.shape[0]/batch_size)
-        # print(accuracy)
+        predict = model.predict_generator(training_generator, x_train.shape[0]/batch_size)
+        f1_score(y_train,predict)
+
+        accuracy = 0
+        for i, n in enumerate(training_generator.filenames):
+            accuracy += f1_score(train_photo_to_label_dict[n],predict[i])
+        accuracy /= len(training_generator.filenames)
+        print("F1 Score: ",accuracy)
 
         model.save(save_string)
         model.save_weights("weights" + save_string)
