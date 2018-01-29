@@ -7,10 +7,12 @@ from tensorflow.python.keras.utils import to_categorical
 from InceptionV3model import InceptionV3model
 from XceptionModel import XCeptionModel
 from VGG16 import VGG16Model
+from sklearn.metrics import f1_score
 from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
 from PIL import Image
 import h5py
+from MultilabelGenerator import MultilabelGenerator
 
 
 learning_data_root = 'data/learning/'
@@ -57,28 +59,32 @@ train_datagen = ImageDataGenerator(rotation_range=30.,
 
 utility.apply_mean(train_datagen)
 
-training_generator = utility.multilabel_flow(photo_root,
+training_multilabel_datagen = MultilabelGenerator(photo_root,
                                     train_datagen,
                                     train_photo_to_label_dict,
-                                    bs=batch_size,
+                                    batch_size=batch_size,
                                     target_size=(img_width,img_height),
                                     train_or_valid='train')
+
+training_generator = training_multilabel_datagen.flow()
 
 # Validation data
 validation_datagen = ImageDataGenerator(preprocessing_function=utility.preprocess_input)
 
 utility.apply_mean(validation_datagen)
 
-validation_generator = utility.multilabel_flow(photo_root,
+validation_multilabel_datagen = MultilabelGenerator(photo_root,
                                     train_datagen,
                                     validation_photo_to_label_dict,
-                                    bs=batch_size,
+                                    batch_size=batch_size,
                                     target_size=(img_width,img_height),
                                     train_or_valid='validation')
 
+validation_generator = validation_multilabel_datagen.flow()
+
 # Hyperparameters
-num_freezed_layers_array =[5,80,249]
-learning_rates = [0.01, 0.001, 0.0001]
+num_freezed_layers_array =[14,16,18,20]
+learning_rates = [0.01,0.001,0.0001]
 
 # Hyperparameter search
 for num_freezed_layers in num_freezed_layers_array:
@@ -103,13 +109,20 @@ for num_freezed_layers in num_freezed_layers_array:
         model.fit_generator(training_generator,
                             steps_per_epoch=x_train.shape[0]/batch_size,  # nb_train_samples,
                             epochs=epoch_size,
-                            validation_data=training_generator,
-                            validation_steps=x_train.shape[0]/batch_size  # nb_validation_samples,
+                            verbose=1,
+                            validation_data=validation_generator,
+                            validation_steps=x_validation.shape[0]/batch_size
                             )
 
-        # and predict on the test set
-        accuracy = model.predict_generator(training_generator, x_train.shape[0]/batch_size)
-        print(accuracy)
+        predict = model.predict_generator(training_generator, x_train.shape[0]/batch_size)
+
+        accuracy_arr = np.zeros((len(training_multilabel_datagen.directory_generator.filenames)))
+        for i, n in enumerate(training_multilabel_datagen.directory_generator.filenames):
+            key = int(n.split('/')[-1].replace('.jpg',''))
+            accuracy_arr[i] = f1_score(np.asarray(training_multilabel_datagen.photo_name_to_label_dict[key]),np.around(np.asarray(predict[i])))
+        accuracy = np.mean(accuracy_arr)
+
+        print("F1 Score: ",accuracy)
 
         model.save(save_string)
         model.save_weights("weights" + save_string)
