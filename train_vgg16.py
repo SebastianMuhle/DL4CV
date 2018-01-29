@@ -106,8 +106,7 @@ for num_freezed_layers in num_freezed_layers_array:
                             epochs=epoch_size,
                             verbose=2,
                             validation_data=validation_generator,
-                            validation_steps=x_validation.shape[0]/batch_size,  # nb_validation_samples,
-                            callbacks=[metrics]
+                            validation_steps=x_validation.shape[0]/batch_size
                             )
 
         predict = model.predict_generator(training_generator, x_train.shape[0]/batch_size)
