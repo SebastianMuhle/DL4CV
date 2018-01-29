@@ -77,8 +77,8 @@ validation_generator = utility.multilabel_flow(photo_root,
                                     train_or_valid='validation')
 
 # Hyperparameters
-num_freezed_layers_array =[18]
-learning_rates = [0.01]
+num_freezed_layers_array =[1,4,7,10,13,15,18]
+learning_rates = [0,1,0.01,0.001,0.0001]
 
 # Hyperparameter search
 for num_freezed_layers in num_freezed_layers_array:
