@@ -120,7 +120,7 @@ for num_freezed_layers in num_freezed_layers_array:
 
         accuracy = 0
         for i, n in enumerate(training_multilabel_datagen.directory_generator.filenames):
-            accuracy += f1_score(training_multilabel_datagen.train_photo_to_label_dict[n],predict[i])
+            accuracy += f1_score(photo_name_to_label_dict.train_photo_to_label_dict[n],predict[i])
         accuracy /= len(training_generator.filenames)
         print("F1 Score: ",accuracy)
 
