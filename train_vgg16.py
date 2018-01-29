@@ -122,7 +122,19 @@ for num_freezed_layers in num_freezed_layers_array:
             accuracy_arr[i] = f1_score(np.asarray(training_multilabel_datagen.photo_name_to_label_dict[key]),np.around(np.asarray(predict[i])))
         accuracy = np.mean(accuracy_arr)
 
-        print("F1 Score: ",accuracy)
+        print("Training - F1 Score: ",accuracy)
+        print("Training - Loss: ",model.evaluate_generator(training_generator, x_train.shape[0]/batch_size))
+
+        predict = model.predict_generator(validation_generator, x_validation.shape[0]/batch_size)
+
+        accuracy_arr = np.zeros((len(validation_multilabel_datagen.directory_generator.filenames)))
+        for i, n in enumerate(validation_multilabel_datagen.directory_generator.filenames):
+            key = int(n.split('/')[-1].replace('.jpg',''))
+            accuracy_arr[i] = f1_score(np.asarray(validation_multilabel_datagen.photo_name_to_label_dict[key]),np.around(np.asarray(predict[i])))
+        accuracy = np.mean(accuracy_arr)
+
+        print("Validation - F1 Score: ",accuracy)
+        print("Validation - Loss: ",model.evaluate_generator(validation_generator, x_validation.shape[0]/batch_size))
 
         model.save(save_string)
         model.save_weights(utility.save_weights_url(num_freezed_layers, lr))
