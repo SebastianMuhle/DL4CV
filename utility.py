@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import datetime
 
-model_data_root = 'data/learning/model/'
+model_data_root = 'data/learning/models/'
 
 # for model.fit function -> keras description
 # class_weight: Optional dictionary mapping class indices (integers) to a weight (float) value,
