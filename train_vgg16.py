@@ -83,7 +83,7 @@ validation_multilabel_datagen = MultilabelGenerator(photo_root,
 validation_generator = validation_multilabel_datagen.flow()
 
 # Hyperparameters
-num_freezed_layers_array =[14,16,18,20]
+num_freezed_layers_array =[16,18,20]
 learning_rates = [0.01,0.001,0.0001]
 
 # Hyperparameter search
@@ -119,9 +119,12 @@ for num_freezed_layers in num_freezed_layers_array:
         accuracy_arr = np.zeros((len(training_multilabel_datagen.directory_generator.filenames)))
         for i, n in enumerate(training_multilabel_datagen.directory_generator.filenames):
             key = int(n.split('/')[-1].replace('.jpg',''))
-            accuracy_arr[i] = f1_score(training_multilabel_datagen.photo_name_to_label_dict[key]*1.0,predict[i]*1.0) * 1.0
+            accuracy_arr[i] = model.evaluate(key,predict[i],training_multilabel_datagen.photo_name_to_label_dict[key])
         accuracy = np.mean(accuracy_arr)
-        print("F1 Score: ",accuracy)
+
+        acc = model.evaluate_generator(training_generator, x_train.shape[0]/batch_size)
+        print("Simple Accuracy Score: ",accuracy)
+        print("Generator Accuracy Score: ",acc)
 
         model.save(save_string)
         model.save_weights("weights" + save_string)
