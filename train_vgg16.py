@@ -12,6 +12,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
 from PIL import Image
 import h5py
+from MultilabelGenerator import MultilabelGenerator
 
 
 learning_data_root = 'data/learning/'
@@ -58,24 +59,30 @@ train_datagen = ImageDataGenerator(rotation_range=30.,
 
 utility.apply_mean(train_datagen)
 
-training_generator = utility.multilabel_flow(photo_root,
+training_multilabel_datagen = MultilabelGenerator(photo_root,
                                     train_datagen,
                                     train_photo_to_label_dict,
-                                    bs=batch_size,
+                                    batch_size=batch_size,
                                     target_size=(img_width,img_height),
                                     train_or_valid='train')
+
+training_generator = training_multilabel_datagen.flow()
+
+print(training_multilabel_datagen.directory_generator.filenames)
 
 # Validation data
 validation_datagen = ImageDataGenerator(preprocessing_function=utility.preprocess_input)
 
 utility.apply_mean(validation_datagen)
 
-validation_generator = utility.multilabel_flow(photo_root,
+validation_multilabel_datagen = MultilabelGenerator(photo_root,
                                     train_datagen,
                                     validation_photo_to_label_dict,
-                                    bs=batch_size,
+                                    batch_size=batch_size,
                                     target_size=(img_width,img_height),
                                     train_or_valid='validation')
+
+validation_generator = validation_multilabel_datagen.flow()
 
 # Hyperparameters
 num_freezed_layers_array =[14,16,18,20]
@@ -112,8 +119,8 @@ for num_freezed_layers in num_freezed_layers_array:
         predict = model.predict_generator(training_generator, x_train.shape[0]/batch_size)
 
         accuracy = 0
-        for i, n in enumerate(training_generator.filenames):
-            accuracy += f1_score(train_photo_to_label_dict[n],predict[i])
+        for i, n in enumerate(training_multilabel_datagen.directory_generator.filenames):
+            accuracy += f1_score(training_multilabel_datagen.train_photo_to_label_dict[n],predict[i])
         accuracy /= len(training_generator.filenames)
         print("F1 Score: ",accuracy)
 
