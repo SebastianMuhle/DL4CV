@@ -9,7 +9,6 @@ from tensorflow.python.keras.utils import np_utils
 
 filename = "NameOfOurFile"
 raw_text = open(filename).read()
-chars = list(set(raw_text))
 
 chars = sorted(list(set(raw_text)))
 char_to_int = dict((c, i) for i, c in enumerate(chars))
