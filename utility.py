@@ -3,7 +3,7 @@ from tensorflow.python.keras.utils import to_categorical
 import pandas as pd
 import numpy as np
 import datetime
-
+from itertools import chain, repeat, cycle
 
 # for model.fit function -> keras description
 # class_weight: Optional dictionary mapping class indices (integers) to a weight (float) value,
@@ -61,7 +61,21 @@ def to_multi_label_categorical(labels, dimension = 9):
         results[i] = np.sum(temp, axis=0)
     return results
 
-
 def apply_mean(image_data_generator):
     """Subtracts the dataset mean"""
     image_data_generator.mean = np.array([103.939, 116.779, 123.68], dtype=np.float32).reshape((3, 1, 1))
+
+#Generator
+def grouper(n, iterable, padvalue=None):
+    g = cycle(zip(*[chain(iterable, repeat(padvalue, n-1))]*n))
+    for batch in g:
+        yield list(filter(None, batch))
+ 
+ 
+def multilabel_flow(path_to_data, idg, photo_name_to_label_dict, bs=256, target_size=(32,32), train_or_valid='train'):
+    gen = idg.flow_from_directory(path_to_data, batch_size=bs, target_size=target_size, classes=[train_or_valid], shuffle=False)
+    names_generator = grouper(bs, gen.filenames)
+    for (X_batch, _), names in zip(gen, names_generator):
+        names = [n.split('/')[-1].replace('.jpg','') for n in names]
+        targets = [photo_name_to_label_dict[int(x)] for x in names]
+        yield X_batch, targets

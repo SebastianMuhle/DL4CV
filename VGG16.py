@@ -15,6 +15,7 @@ class VGG16Model:
         # create the base pre-trained model
         base_model = tf.keras.applications.VGG16(weights = "imagenet",
                                                    include_top=False, input_shape=(img_width, img_height, 3))
+
         # add a global spatial average pooling layer
         x = base_model.output
         x = layers.GlobalAveragePooling2D()(x)
