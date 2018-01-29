@@ -7,6 +7,7 @@ from tensorflow.python.keras.utils import to_categorical
 from InceptionV3model import InceptionV3model
 from XceptionModel import XCeptionModel
 from VGG16 import VGG16Model
+from Metrics import Metrics
 from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
 from PIL import Image
@@ -78,7 +79,9 @@ validation_generator = utility.multilabel_flow(photo_root,
 
 # Hyperparameters
 num_freezed_layers_array =[14,16,18,20]
-learning_rates = [0.1,0.01,0.001,0.0001]
+learning_rates = [0.01,0.001,0.0001]
+
+metrics = Metrics()
 
 # Hyperparameter search
 for num_freezed_layers in num_freezed_layers_array:
@@ -93,7 +96,7 @@ for num_freezed_layers in num_freezed_layers_array:
 
         # Create model
         model = VGG16Model().create_model(num_freezedLayers=num_freezed_layers, nb_classes=nb_classes,
-                                                optimizer=optimizerSGD)
+                                                optimizer=optimizerAdam)
 
         tbCallBack = tf.keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, batch_size=batch_size, write_graph=True,
                                     write_grads=False, write_images=False,
@@ -103,13 +106,15 @@ for num_freezed_layers in num_freezed_layers_array:
         model.fit_generator(training_generator,
                             steps_per_epoch=x_train.shape[0]/batch_size,  # nb_train_samples,
                             epochs=epoch_size,
+                            verbose=2,
                             validation_data=validation_generator,
-                            validation_steps=x_validation.shape[0]/batch_size  # nb_validation_samples,
+                            validation_steps=x_validation.shape[0]/batch_size,  # nb_validation_samples,
+                            callbacks=[metrics]
                             )
 
         # and predict on the test set
-        accuracy = model.evaluate_generator(training_generator, x_train.shape[0]/batch_size)
-        print(accuracy)
+        # accuracy = model.evaluate_generator(training_generator, x_train.shape[0]/batch_size)
+        # print(accuracy)
 
         model.save(save_string)
         model.save_weights("weights" + save_string)
