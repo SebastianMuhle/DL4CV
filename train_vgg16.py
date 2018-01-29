@@ -99,7 +99,7 @@ for num_freezed_layers in num_freezed_layers_array:
 
         # Create model
         model = VGG16Model().create_model(num_freezedLayers=num_freezed_layers, nb_classes=nb_classes,
-                                                optimizer=optimizerAdam)
+                                                optimizer=optimizerSGD)
 
         tbCallBack = tf.keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, batch_size=batch_size, write_graph=True,
                                     write_grads=False, write_images=False,
@@ -119,12 +119,10 @@ for num_freezed_layers in num_freezed_layers_array:
         accuracy_arr = np.zeros((len(training_multilabel_datagen.directory_generator.filenames)))
         for i, n in enumerate(training_multilabel_datagen.directory_generator.filenames):
             key = int(n.split('/')[-1].replace('.jpg',''))
-            accuracy_arr[i] = f1_score(training_multilabel_datagen.photo_name_to_label_dict[key],predict[i])
+            accuracy_arr[i] = f1_score(np.asarray(training_multilabel_datagen.photo_name_to_label_dict[key]),np.around(np.asarray(predict[i])))
         accuracy = np.mean(accuracy_arr)
 
-        acc = model.evaluate_generator(training_generator, x_train.shape[0]/batch_size)
-        print("Simple Accuracy Score: ",accuracy)
-        print("Generator Accuracy Score: ",acc)
+        print("F1 Score: ",accuracy)
 
         model.save(save_string)
         model.save_weights("weights" + save_string)
