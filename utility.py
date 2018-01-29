@@ -63,7 +63,7 @@ def to_multi_label_categorical(labels, dimension = 9):
 
 def apply_mean(image_data_generator):
     """Subtracts the dataset mean"""
-    image_data_generator.mean = np.array([103.939, 116.779, 123.68], dtype=np.float32).reshape((3, 1, 1))
+    image_data_generator.mean = np.array([127.110, 105.946, 88.947], dtype=np.float32).reshape((3, 1, 1))
 
 #Generator
 def grouper(n, iterable, padvalue=None):
