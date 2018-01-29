@@ -31,6 +31,15 @@ def save_string( num_freezed_layers, lr):
     save_string_return = save_string_return + ".h5"
     return save_string_return
 
+def save_weights_url(num_freezed_layers, lr):
+    current_date = '{:%d.%m.%Y %H:%M:%S}'.format(datetime.datetime.now())
+    save_string1 =  model_data_root + "weights_" + current_date + "_VGG16_num_freezedLayers_%d _r_%g" % (num_freezed_layers, lr)
+    save_string_return = save_string1.replace(" ", "_")
+    save_string_return = save_string_return.replace(":", "_")
+    save_string_return = save_string_return.replace(".", "_")
+    save_string_return = save_string_return + ".h5"
+    return save_string_return
+
 
 def csv_to_lists(csv_file_name, sep=','):
     # parse csv

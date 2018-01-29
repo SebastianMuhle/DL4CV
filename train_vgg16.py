@@ -125,4 +125,4 @@ for num_freezed_layers in num_freezed_layers_array:
         print("F1 Score: ",accuracy)
 
         model.save(save_string)
-        model.save_weights("weights" + save_string)
+        model.save_weights(utility.save_weights_url(num_freezed_layers, lr))
