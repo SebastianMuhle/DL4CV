@@ -118,7 +118,7 @@ for num_freezed_layers in num_freezed_layers_array:
 
         accuracy_arr = np.zeros((len(training_multilabel_datagen.directory_generator.filenames)))
         for i, n in enumerate(training_multilabel_datagen.directory_generator.filenames):
-            key = n.split('/')[-1].replace('.jpg','')
+            key = int(n.split('/')[-1].replace('.jpg',''))
             accuracy_arr[i] = f1_score(training_multilabel_datagen.photo_name_to_label_dict[key],predict[i])
         accuracy = np.mean(accuracy_arr)
         print("F1 Score: ",accuracy)
