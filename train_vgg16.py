@@ -83,8 +83,8 @@ validation_multilabel_datagen = MultilabelGenerator(photo_root,
 validation_generator = validation_multilabel_datagen.flow()
 
 # Hyperparameters
-num_freezed_layers_array =[14,16,18,20]
-learning_rates = [0.01,0.001,0.0001]
+num_freezed_layers_array =[10,12,14,16,18]
+learning_rates = [0.1,0.05,0.01,0.005,0.001,0,0005,0.0001]
 
 # Hyperparameter search
 for num_freezed_layers in num_freezed_layers_array:
