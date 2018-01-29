@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import datetime
 
+model_data_root = 'data/learning/model/'
 
 # for model.fit function -> keras description
 # class_weight: Optional dictionary mapping class indices (integers) to a weight (float) value,
@@ -23,7 +24,7 @@ def preprocess_input(x):
 
 def save_string( num_freezed_layers, lr):
     current_date = '{:%d.%m.%Y %H:%M:%S}'.format(datetime.datetime.now())
-    save_string1 = current_date + "_Inception_num_freezedLayers_%d _r_%g" % (num_freezed_layers, lr)
+    save_string1 =  model_data_root + current_date + "_VGG16_num_freezedLayers_%d _r_%g" % (num_freezed_layers, lr)
     save_string_return = save_string1.replace(" ", "_")
     save_string_return = save_string_return.replace(":", "_")
     save_string_return = save_string_return.replace(".", "_")
