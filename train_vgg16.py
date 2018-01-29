@@ -104,13 +104,12 @@ for num_freezed_layers in num_freezed_layers_array:
         model.fit_generator(training_generator,
                             steps_per_epoch=x_train.shape[0]/batch_size,  # nb_train_samples,
                             epochs=epoch_size,
-                            verbose=2,
+                            verbose=1,
                             validation_data=validation_generator,
                             validation_steps=x_validation.shape[0]/batch_size
                             )
 
         predict = model.predict_generator(training_generator, x_train.shape[0]/batch_size)
-        f1_score(y_train,predict)
 
         accuracy = 0
         for i, n in enumerate(training_generator.filenames):
