@@ -99,7 +99,7 @@ learning_rates = [0.1, 0.05, 0.01, 0.005, 0.001, 0.0005, 0.0001]
 for lr in learning_rates:
 
     save_string = utility.save_string(0, lr)
-    print(save_string)
+    utility.log(save_string)
 
     # Create Optimizer
     optimizerSGD = tf.keras.optimizers.SGD(lr=lr, momentum=0.9)
@@ -129,8 +129,8 @@ for lr in learning_rates:
         accuracy_arr[i] = f1_score(np.asarray(training_multilabel_datagen.photo_name_to_label_dict[key]),np.around(np.asarray(predict[i])))
     accuracy = np.mean(accuracy_arr)
 
-    print("Training - F1 Score: ",accuracy)
-    print("Training - Loss: ",model.evaluate_generator(training_generator, x_train.shape[0]/batch_size))
+    utility.log("Training - F1 Score: ",accuracy)
+    utility.log("Training - Loss: ",model.evaluate_generator(training_generator, x_train.shape[0]/batch_size))
 
     predict = model.predict_generator(validation_generator, x_validation.shape[0]/batch_size)
 
@@ -140,8 +140,8 @@ for lr in learning_rates:
         accuracy_arr[i] = f1_score(np.asarray(validation_multilabel_datagen.photo_name_to_label_dict[key]),np.around(np.asarray(predict[i])))
     accuracy = np.mean(accuracy_arr)
 
-    print("Validation - F1 Score: ",accuracy)
-    print("Validation - Loss: ",model.evaluate_generator(validation_generator, x_validation.shape[0]/batch_size))
+    utility.log("Validation - F1 Score: ",accuracy)
+    utility.log("Validation - Loss: ",model.evaluate_generator(validation_generator, x_validation.shape[0]/batch_size))
 
     model.save(save_string)
     model.save_weights(utility.save_weights_url(0, lr))

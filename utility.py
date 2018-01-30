@@ -4,6 +4,7 @@ import numpy as np
 import datetime
 
 model_data_root = 'data/learning/models/'
+learning_data_root = 'data/learning/'
 
 # for model.fit function -> keras description
 # class_weight: Optional dictionary mapping class indices (integers) to a weight (float) value,
@@ -21,6 +22,10 @@ def preprocess_input(x):
     x *= 2.
     return x
 
+def log(string):
+    log_file = open(learning_data_root+"log.txt","a")
+    print(string)
+    log_file.write(string)
 
 def save_string( num_freezed_layers, lr):
     current_date = '{:%d.%m.%Y %H:%M:%S}'.format(datetime.datetime.now())
