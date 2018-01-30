@@ -97,7 +97,9 @@ for i in range(len(names)):
     validation_labels[i] = validation_photo_to_label_dict[int(names[i])]
 
 # Call function to extract VGG16 bottleneck features
+utility.log("Saving Bottleneck Features")
 save_bottleneck_features(training_generator,training_multilabel_datagen.directory_generator,validation_generator,validation_multilabel_datagen.directory_generator,batch_size,num_classes=nb_classes)
+utility.log("Saved Bottleneck Features")
 
 # Load extracted bottleneck features
 train_data = np.load('bottleneck_features_train.npy')
