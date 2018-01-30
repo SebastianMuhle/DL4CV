@@ -3,10 +3,10 @@ from tensorflow.python.keras.layers import Dropout, Flatten, Dense
 from tensorflow.python.keras import layers
 
 
-class Own_Classifier:
+class TopClassifier:
 
     def __init__(self):
-        super(Own_Classifier, self).__init__()
+        super(TopClassifier, self).__init__()
 
     @staticmethod
     def create_model(nb_classes=9, noveltyDetectionLayerSize=1024, dropout = 0.5,
