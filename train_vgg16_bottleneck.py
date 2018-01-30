@@ -1,7 +1,7 @@
 import utility
 import numpy as np
 import tensorflow as tf
-import VGG16_bottleneck
+from VGG16_bottleneck import save_bottleneck_features
 import pandas as pd
 from tensorflow.python.keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
 from tensorflow.python.keras.utils import to_categorical
@@ -71,6 +71,12 @@ training_multilabel_datagen = MultilabelGenerator(photo_root,
 
 training_generator = training_multilabel_datagen.flow()
 
+names = [n.split('/')[-1].replace('.jpg','') for n in training_multilabel_datagen.directory_generator.filenames]
+train_labels = np.zeros((len(names),nb_classes))
+for i in range(len(names)):
+    train_labels[i] = train_photo_to_label_dict[int(names[i])]
+
+
 # Validation data
 validation_datagen = ImageDataGenerator(preprocessing_function=utility.preprocess_input)
 
@@ -85,12 +91,18 @@ validation_multilabel_datagen = MultilabelGenerator(photo_root,
 
 validation_generator = validation_multilabel_datagen.flow()
 
+names = [n.split('/')[-1].replace('.jpg','') for n in validation_multilabel_datagen.directory_generator.filenames]
+validation_labels = np.zeros((len(names),nb_classes))
+for i in range(len(names)):
+    validation_labels[i] = validation_photo_to_label_dict[int(names[i])]
+
 # Call function to extract VGG16 bottleneck features
-VGG16_bottleneck.save_bottleneck_features()
+save_bottleneck_features(training_generator,training_multilabel_datagen.directory_generator,validation_generator,validation_multilabel_datagen.directory_generator,batch_size,num_classes=nb_classes)
 
 # Load extracted bottleneck features
 train_data = np.load('bottleneck_features_train.npy')
 validation_data = np.load('bottleneck_features_validation.npy')
+
 
 # Hyperparameters
 learning_rates = [0.1, 0.05, 0.01, 0.005, 0.001, 0.0005, 0.0001]
@@ -105,43 +117,37 @@ for lr in learning_rates:
     optimizerSGD = tf.keras.optimizers.SGD(lr=lr, momentum=0.9)
     optimizerAdam = tf.keras.optimizers.Adam(lr=lr, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0,)
 
-    model = Own_Classifier().create_model(nb_classes=nb_classes, optimizer=optimizerSGD)
+    model = Own_Classifier().create_model(nb_classes=nb_classes, optimizer=optimizerAdam,input_shape=train_data.shape[1:])
 
 
     tbCallBack = tf.keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, batch_size=batch_size, write_graph=True,
                                     write_grads=False, write_images=False,
                                     #embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None
                                         )
+    model.fit(train_data, train_labels,  
+          epochs=epoch_size,  
+          batch_size=batch_size,  
+          validation_data=(validation_data, validation_labels))
 
-    model.fit_generator(training_generator,
-                            steps_per_epoch=x_train.shape[0]/batch_size,  # nb_train_samples,
-                            epochs=epoch_size,
-                            verbose=1,
-                            validation_data=validation_generator,
-                            validation_steps=x_validation.shape[0]/batch_size
-                            )
+    predictions = model.predict(train_data)
 
-    predict = model.predict_generator(training_generator, x_train.shape[0]/batch_size)
-
-    accuracy_arr = np.zeros((len(training_multilabel_datagen.directory_generator.filenames)))
-    for i, n in enumerate(training_multilabel_datagen.directory_generator.filenames):
-        key = int(n.split('/')[-1].replace('.jpg',''))
-        accuracy_arr[i] = f1_score(np.asarray(training_multilabel_datagen.photo_name_to_label_dict[key]),np.around(np.asarray(predict[i])))
+    accuracy_arr = np.zeros((train_data.shape[0]))
+    for i in range(accuracy_arr.shape[0]):
+        accuracy_arr[i] = f1_score(train_labels[i],predictions[i])
     accuracy = np.mean(accuracy_arr)
 
     utility.log("Training - F1 Score: ",accuracy)
-    utility.log("Training - Loss: ",model.evaluate_generator(training_generator, x_train.shape[0]/batch_size))
+    utility.log("Training - Loss: ",model.evaluate(train_data,train_labels))
 
-    predict = model.predict_generator(validation_generator, x_validation.shape[0]/batch_size)
+    predictions = model.predict(validation_data)
 
-    accuracy_arr = np.zeros((len(validation_multilabel_datagen.directory_generator.filenames)))
-    for i, n in enumerate(validation_multilabel_datagen.directory_generator.filenames):
-        key = int(n.split('/')[-1].replace('.jpg',''))
-        accuracy_arr[i] = f1_score(np.asarray(validation_multilabel_datagen.photo_name_to_label_dict[key]),np.around(np.asarray(predict[i])))
+    accuracy_arr = np.zeros((validation_data.shape[0]))
+    for i in range(accuracy_arr.shape[0]):
+        accuracy_arr[i] = f1_score(validation_labels[i],predictions[i])
     accuracy = np.mean(accuracy_arr)
 
     utility.log("Validation - F1 Score: ",accuracy)
-    utility.log("Validation - Loss: ",model.evaluate_generator(validation_generator, x_validation.shape[0]/batch_size))
+    utility.log("Validation - Loss: ",model.evaluate(validation_data,validation_labels))
 
     model.save(save_string)
     model.save_weights(utility.save_weights_url(0, lr))

@@ -1,20 +1,19 @@
 import tensorflow as tf
-import train_vgg16_bottleneck as train
 import numpy as np
 import math
 
 
-def save_bottleneck_features():
+def save_bottleneck_features(training_generator,training_directory_generator,validation_generator,validation_directory_generator,batch_size,num_classes=9):
     # Training parameters for bottleneck features
 
     # Training features
-    nb_train_samples = len(train.training_generator.filenames)
-    num_classes = len(train.training_generator.class_indices)
-    predict_size_train = int(math.ceil(nb_train_samples / train.batch_size))
+    nb_train_samples = len(training_directory_generator.filenames)
+    num_classes = num_classes
+    predict_size_train = int(math.ceil(nb_train_samples / batch_size))
 
     # Validation features
-    nb_validation_samples = len(train.validation_generator.filenames)
-    predict_size_validation = int(math.ceil(nb_validation_samples / train.batch_size))
+    nb_validation_samples = len(validation_directory_generator.filenames)
+    predict_size_validation = int(math.ceil(nb_validation_samples / batch_size))
 
     # Bottleneck extraction
 
@@ -23,11 +22,11 @@ def save_bottleneck_features():
 
     # Extract bottleneck features for training data
     bottleneck_features_train = model.predict_generator(
-        train.training_generator, predict_size_train)
+        training_generator, predict_size_train)
     np.save('bottleneck_features_train.npy', bottleneck_features_train)
 
     # Extract bottleneck features for validation data
     bottleneck_features_validation = model.predict_generator(
-        train.validation_generator, predict_size_validation)
+        validation_generator, predict_size_validation)
     np.save('bottleneck_features_validation.npy', bottleneck_features_validation)
 
