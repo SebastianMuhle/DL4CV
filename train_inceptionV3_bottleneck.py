@@ -1,7 +1,7 @@
 import utility
 import numpy as np
 import tensorflow as tf
-from VGG16_bottleneck import save_bottleneck_features
+from InceptionV3_bottleneck import save_bottleneck_features
 import pandas as pd
 from tensorflow.python.keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
 from tensorflow.python.keras.utils import to_categorical
@@ -25,7 +25,7 @@ test_photo_root = learning_data_root + 'photos/'
 
 # Image Parameters
 # Xception 299, 299 - VGG16 224, 224
-img_width, img_height = 224, 224
+img_width, img_height = 299, 299
 img_shape = (img_width,img_height,3)
 
 #DL Parameters
@@ -37,10 +37,10 @@ classes = ['good_for_lunch', 'good_for_dinner', 'takes_reservations', 'outdoor_s
 nb_classes = 9
 
 # Load extracted bottleneck features
-train_data = np.load(learning_data_root+'vgg16_bottleneck_features_train.npy')
-validation_data = np.load(learning_data_root+'vgg16_bottleneck_features_validation.npy')
-train_labels = np.load(learning_data_root+'vgg16_bottleneck_labels_training.npy')
-validation_labels = np.load(learning_data_root+'vgg16_bottleneck_labels_validation.npy')
+train_data = np.load(learning_data_root+'inceptionV3_bottleneck_features_train.npy')
+validation_data = np.load(learning_data_root+'inceptionV3_bottleneck_features_validation.npy')
+train_labels = np.load(learning_data_root+'inceptionV3_bottleneck_labels_training.npy')
+validation_labels = np.load(learning_data_root+'inceptionV3_bottleneck_labels_validation.npy')
 
 
 # Hyperparameters
