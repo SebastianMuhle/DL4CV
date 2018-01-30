@@ -37,10 +37,10 @@ classes = ['good_for_lunch', 'good_for_dinner', 'takes_reservations', 'outdoor_s
 nb_classes = 9
 
 # Load extracted bottleneck features
-train_data = np.load(learning_data_root+'inceptionV3_bottleneck_features_train.npy')
-validation_data = np.load(learning_data_root+'inceptionV3_bottleneck_features_validation.npy')
-train_labels = np.load(learning_data_root+'inceptionV3_bottleneck_labels_training.npy')
-validation_labels = np.load(learning_data_root+'inceptionV3_bottleneck_labels_validation.npy')
+train_data = np.load(learning_data_root+'inceptionv3_bottleneck_features_train.npy')
+validation_data = np.load(learning_data_root+'inceptionv3_bottleneck_features_validation.npy')
+train_labels = np.load(learning_data_root+'inceptionv3_bottleneck_labels_training.npy')
+validation_labels = np.load(learning_data_root+'inceptionv3_bottleneck_labels_validation.npy')
 
 
 # Hyperparameters
