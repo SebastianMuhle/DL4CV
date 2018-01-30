@@ -100,8 +100,8 @@ for i in range(len(names)):
 print("Extracting Bottleneck Features")
 save_bottleneck_features(training_generator,training_multilabel_datagen.directory_generator,validation_generator,validation_multilabel_datagen.directory_generator,batch_size,num_classes=nb_classes)
 
-np.save(learning_data_root+'bottleneck_labels_training.npy', train_labels)
+np.save(learning_data_root+'vgg16_bottleneck_labels_training.npy', train_labels)
 print("Saved bottleneck labels for training")
-np.save(learning_data_root+'bottleneck_labels_validation.npy', validation_labels)
+np.save(learning_data_root+'vgg16_bottleneck_labels_validation.npy', validation_labels)
 print("Saved bottleneck labels for validation")
 
