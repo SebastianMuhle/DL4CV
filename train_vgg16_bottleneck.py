@@ -8,6 +8,7 @@ from tensorflow.python.keras.utils import to_categorical
 from InceptionV3model import InceptionV3model
 from XceptionModel import XCeptionModel
 from VGG16 import VGG16Model
+from own_classifier import Own_Classifier
 from sklearn.metrics import f1_score
 from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
@@ -87,6 +88,10 @@ validation_generator = validation_multilabel_datagen.flow()
 # Call function to extract VGG16 bottleneck features
 VGG16_bottleneck.save_bottleneck_features()
 
+# Load extracted bottleneck features
+train_data = np.load('bottleneck_features_train.npy')
+validation_data = np.load('bottleneck_features_validation.npy')
+
 # Hyperparameters
 learning_rates = [0.1, 0.05, 0.01, 0.005, 0.001, 0.0005, 0.0001]
 
@@ -100,8 +105,7 @@ for lr in learning_rates:
     optimizerSGD = tf.keras.optimizers.SGD(lr=lr, momentum=0.9)
     optimizerAdam = tf.keras.optimizers.Adam(lr=lr, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0,)
 
-    # New model head
-
+    model = Own_Classifier().create_model(nb_classes=nb_classes, optimizer=optimizerSGD)
 
 
     tbCallBack = tf.keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, batch_size=batch_size, write_graph=True,
@@ -110,10 +114,13 @@ for lr in learning_rates:
                                         )
 
     model.fit_generator(training_generator,
+                            # Haydar please take a look at this
+                            train_data, train_labels,
                             steps_per_epoch=x_train.shape[0]/batch_size,  # nb_train_samples,
                             epochs=epoch_size,
                             verbose=1,
-                            validation_data=validation_generator,
+                            # And also this
+                            validation_data=(validation_data, validation_labels),
                             validation_steps=x_validation.shape[0]/batch_size
                             )
 
@@ -140,4 +147,4 @@ for lr in learning_rates:
     print("Validation - Loss: ",model.evaluate_generator(validation_generator, x_validation.shape[0]/batch_size))
 
     model.save(save_string)
-    model.save_weights(utility.save_weights_url(num_freezed_layers, lr))
+    model.save_weights(utility.save_weights_url(0, lr))
