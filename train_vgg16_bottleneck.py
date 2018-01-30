@@ -1,6 +1,7 @@
 import utility
 import numpy as np
 import tensorflow as tf
+import VGG16_bottleneck
 import pandas as pd
 from tensorflow.python.keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
 from tensorflow.python.keras.utils import to_categorical
@@ -12,6 +13,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
 from PIL import Image
 import h5py
+import math
 from MultilabelGenerator import MultilabelGenerator
 
 
@@ -82,31 +84,32 @@ validation_multilabel_datagen = MultilabelGenerator(photo_root,
 
 validation_generator = validation_multilabel_datagen.flow()
 
+# Call function to extract VGG16 bottleneck features
+VGG16_bottleneck.save_bottleneck_features()
+
 # Hyperparameters
-num_freezed_layers_array =[10,12,14,16,18]
-learning_rates = [0.1,0.05,0.01,0.005,0.001,0.0005,0.0001]
+learning_rates = [0.1, 0.05, 0.01, 0.005, 0.001, 0.0005, 0.0001]
 
 # Hyperparameter search
-for num_freezed_layers in num_freezed_layers_array:
-    for lr in learning_rates:
+for lr in learning_rates:
 
-        save_string = utility.save_string(num_freezed_layers, lr)
-        print(save_string)
+    save_string = utility.save_string(0, lr)
+    print(save_string)
 
-        # Create Optimizer
-        optimizerSGD = tf.keras.optimizers.SGD(lr=lr, momentum=0.9)
-        optimizerAdam = tf.keras.optimizers.Adam(lr=lr, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0,)
+    # Create Optimizer
+    optimizerSGD = tf.keras.optimizers.SGD(lr=lr, momentum=0.9)
+    optimizerAdam = tf.keras.optimizers.Adam(lr=lr, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0,)
 
-        # Create model
-        model = VGG16Model().create_model(num_freezedLayers=num_freezed_layers, nb_classes=nb_classes,
-                                                optimizer=optimizerSGD)
+    # New model head
 
-        tbCallBack = tf.keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, batch_size=batch_size, write_graph=True,
+
+
+    tbCallBack = tf.keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, batch_size=batch_size, write_graph=True,
                                     write_grads=False, write_images=False,
                                     #embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None
                                         )
 
-        model.fit_generator(training_generator,
+    model.fit_generator(training_generator,
                             steps_per_epoch=x_train.shape[0]/batch_size,  # nb_train_samples,
                             epochs=epoch_size,
                             verbose=1,
@@ -114,27 +117,27 @@ for num_freezed_layers in num_freezed_layers_array:
                             validation_steps=x_validation.shape[0]/batch_size
                             )
 
-        predict = model.predict_generator(training_generator, x_train.shape[0]/batch_size)
+    predict = model.predict_generator(training_generator, x_train.shape[0]/batch_size)
 
-        accuracy_arr = np.zeros((len(training_multilabel_datagen.directory_generator.filenames)))
-        for i, n in enumerate(training_multilabel_datagen.directory_generator.filenames):
-            key = int(n.split('/')[-1].replace('.jpg',''))
-            accuracy_arr[i] = f1_score(np.asarray(training_multilabel_datagen.photo_name_to_label_dict[key]),np.around(np.asarray(predict[i])))
-        accuracy = np.mean(accuracy_arr)
+    accuracy_arr = np.zeros((len(training_multilabel_datagen.directory_generator.filenames)))
+    for i, n in enumerate(training_multilabel_datagen.directory_generator.filenames):
+        key = int(n.split('/')[-1].replace('.jpg',''))
+        accuracy_arr[i] = f1_score(np.asarray(training_multilabel_datagen.photo_name_to_label_dict[key]),np.around(np.asarray(predict[i])))
+    accuracy = np.mean(accuracy_arr)
 
-        print("Training - F1 Score: ",accuracy)
-        print("Training - Loss: ",model.evaluate_generator(training_generator, x_train.shape[0]/batch_size))
+    print("Training - F1 Score: ",accuracy)
+    print("Training - Loss: ",model.evaluate_generator(training_generator, x_train.shape[0]/batch_size))
 
-        predict = model.predict_generator(validation_generator, x_validation.shape[0]/batch_size)
+    predict = model.predict_generator(validation_generator, x_validation.shape[0]/batch_size)
 
-        accuracy_arr = np.zeros((len(validation_multilabel_datagen.directory_generator.filenames)))
-        for i, n in enumerate(validation_multilabel_datagen.directory_generator.filenames):
-            key = int(n.split('/')[-1].replace('.jpg',''))
-            accuracy_arr[i] = f1_score(np.asarray(validation_multilabel_datagen.photo_name_to_label_dict[key]),np.around(np.asarray(predict[i])))
-        accuracy = np.mean(accuracy_arr)
+    accuracy_arr = np.zeros((len(validation_multilabel_datagen.directory_generator.filenames)))
+    for i, n in enumerate(validation_multilabel_datagen.directory_generator.filenames):
+        key = int(n.split('/')[-1].replace('.jpg',''))
+        accuracy_arr[i] = f1_score(np.asarray(validation_multilabel_datagen.photo_name_to_label_dict[key]),np.around(np.asarray(predict[i])))
+    accuracy = np.mean(accuracy_arr)
 
-        print("Validation - F1 Score: ",accuracy)
-        print("Validation - Loss: ",model.evaluate_generator(validation_generator, x_validation.shape[0]/batch_size))
+    print("Validation - F1 Score: ",accuracy)
+    print("Validation - Loss: ",model.evaluate_generator(validation_generator, x_validation.shape[0]/batch_size))
 
-        model.save(save_string)
-        model.save_weights(utility.save_weights_url(num_freezed_layers, lr))
+    model.save(save_string)
+    model.save_weights(utility.save_weights_url(num_freezed_layers, lr))

@@ -1,37 +1,33 @@
 import tensorflow as tf
-from tensorflow.python.keras import layers
+import train_vgg16_bottleneck as train
+import numpy as np
+import math
 
 
-class VGG16Model:
+def save_bottleneck_features():
+    # Training parameters for bottleneck features
 
-    def __init__(self):
-        super(VGG16Model, self).__init__()
+    # Training features
+    nb_train_samples = len(train.training_generator.filenames)
+    num_classes = len(train.training_generator.class_indices)
+    predict_size_train = int(math.ceil(nb_train_samples / train.batch_size))
 
-    @staticmethod
-    def create_model(num_freezedLayers=16, img_width=224, img_height=224, nb_classes=9, name_fclayer="fc1",
-                     noveltyDetectionLayerSize=1024,
-                     optimizer=tf.keras.optimizers.SGD(lr=0.0001, momentum=0.9), loss='binary_crossentropy'):
+    # Validation features
+    nb_validation_samples = len(train.validation_generator.filenames)
+    predict_size_validation = int(math.ceil(nb_validation_samples / train.batch_size))
 
-        # create the base pre-trained model
-        base_model = tf.keras.applications.VGG16(weights = "imagenet",
-                                                   include_top=False, input_shape=(img_width, img_height, 3))
+    # Bottleneck extraction
 
-        # add a global spatial average pooling layer
-        x = base_model.output
-        x = layers.GlobalAveragePooling2D()(x)
-        x = layers.Dense(noveltyDetectionLayerSize, activation='relu', name=name_fclayer)(x)
-        predictions = layers.Dense(nb_classes, activation='sigmoid')(x)
+    # Create VGG16 Base model for bottleneck feature extraction
+    model = tf.keras.applications.VGG16(include_top=False, weights='imagenet')
 
-        # final model
-        model = tf.keras.models.Model(inputs=base_model.input, outputs=predictions)
+    # Extract bottleneck features for training data
+    bottleneck_features_train = model.predict_generator(
+        train.training_generator, predict_size_train)
+    np.save('bottleneck_features_train.npy', bottleneck_features_train)
 
-        # freeze layers for transfer learning
-        for layer in model.layers[:num_freezedLayers]:
-            layer.trainable = False
-        for layer in model.layers[num_freezedLayers:]:
-            layer.trainable = True
+    # Extract bottleneck features for validation data
+    bottleneck_features_validation = model.predict_generator(
+        train.validation_generator, predict_size_validation)
+    np.save('bottleneck_features_validation.npy', bottleneck_features_validation)
 
-        # compile model and return it
-        model.compile(optimizer=optimizer, loss=loss)
-
-        return model
