@@ -114,13 +114,10 @@ for lr in learning_rates:
                                         )
 
     model.fit_generator(training_generator,
-                            # Haydar please take a look at this
-                            train_data, train_labels,
                             steps_per_epoch=x_train.shape[0]/batch_size,  # nb_train_samples,
                             epochs=epoch_size,
                             verbose=1,
-                            # And also this
-                            validation_data=(validation_data, validation_labels),
+                            validation_data=validation_generator,
                             validation_steps=x_validation.shape[0]/batch_size
                             )
 
