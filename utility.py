@@ -24,7 +24,7 @@ def preprocess_input(x):
 def log(string):
     log_file = open(learning_data_root+"log.txt","a")
     print(string)
-    log_file.write(string)
+    log_file.write(string+"\n")
 
 def save_string( num_freezed_layers, lr):
     current_date = '{:%d.%m.%Y %H:%M:%S}'.format(datetime.datetime.now())

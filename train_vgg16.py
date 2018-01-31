@@ -29,8 +29,8 @@ img_width, img_height = 224, 224
 img_shape = (img_width,img_height,3)
 
 #DL Parameters
-batch_size = 64
-epoch_size = 5
+batch_size = 256
+epoch_size = 10
 
 classes = ['good_for_lunch', 'good_for_dinner', 'takes_reservations', 'outdoor_seating', 'restaurant_is_expensive',
                'has_alcohol', 'has_table_service', 'ambience_is_classy', 'good_for_kids']
@@ -84,7 +84,7 @@ validation_generator = validation_multilabel_datagen.flow()
 
 # Hyperparameters
 num_freezed_layers_array =[19]
-learning_rates = [0.005,0.001,0.0005]
+learning_rates = [0.001]
 
 # Hyperparameter search
 for num_freezed_layers in num_freezed_layers_array:
