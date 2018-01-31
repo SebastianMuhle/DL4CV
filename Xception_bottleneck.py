@@ -23,15 +23,19 @@ def save_bottleneck_features(training_generator,training_directory_generator,val
 
     # Extract bottleneck features for training data
     bottleneck_features_train = model.predict_generator(
-        training_generator, predict_size_train)
+        training_generator, predict_size_train,verbose=1)
     np.save(learning_data_root+'xception_bottleneck_features_train.npy', bottleneck_features_train)
 
     print("Saved bottleneck features for training")
 
+    bottleneck_features_train = None
+
     # Extract bottleneck features for validation data
     bottleneck_features_validation = model.predict_generator(
-        validation_generator, predict_size_validation)
+        validation_generator, predict_size_validation,verbose=1)
     np.save(learning_data_root+'xception_bottleneck_features_validation.npy', bottleneck_features_validation)
 
     print("Saved bottleneck features for validation")
+
+    bottleneck_features_validation = None
 

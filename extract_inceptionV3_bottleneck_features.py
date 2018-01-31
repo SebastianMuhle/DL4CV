@@ -77,6 +77,9 @@ train_labels = np.zeros((len(names),nb_classes))
 for i in range(len(names)):
     train_labels[i] = train_photo_to_label_dict[int(names[i])]
 
+np.save(learning_data_root+'inceptionv3_bottleneck_labels_training.npy', train_labels)
+print("Saved bottleneck labels for training")
+train_labels = None
 
 # Validation data
 validation_datagen = ImageDataGenerator(rescale=1./255,
@@ -102,12 +105,11 @@ validation_labels = np.zeros((len(names),nb_classes))
 for i in range(len(names)):
     validation_labels[i] = validation_photo_to_label_dict[int(names[i])]
 
+np.save(learning_data_root+'inceptionv3_bottleneck_labels_validation.npy', validation_labels)
+print("Saved bottleneck labels for validation")
+vaidation_labels = None
+
 # Call function to extract VGG16 bottleneck features
 print("Extracting Bottleneck Features")
 save_bottleneck_features(training_generator,training_multilabel_datagen.directory_generator,validation_generator,validation_multilabel_datagen.directory_generator,batch_size,num_classes=nb_classes)
-
-np.save(learning_data_root+'inceptionv3_bottleneck_labels_training.npy', train_labels)
-print("Saved bottleneck labels for training")
-np.save(learning_data_root+'inceptionv3_bottleneck_labels_validation.npy', validation_labels)
-print("Saved bottleneck labels for validation")
 

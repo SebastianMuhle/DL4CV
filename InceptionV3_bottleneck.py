@@ -28,10 +28,14 @@ def save_bottleneck_features(training_generator,training_directory_generator,val
 
     print("Saved bottleneck features for training")
 
+    bottleneck_features_train = None
+
     # Extract bottleneck features for validation data
     bottleneck_features_validation = model.predict_generator(
         validation_generator, predict_size_validation,verbose=1)
     np.save(learning_data_root+'inceptionv3_bottleneck_features_validation.npy', bottleneck_features_validation)
 
     print("Saved bottleneck features for validation")
+
+    bottleneck_features_validation = None
 
