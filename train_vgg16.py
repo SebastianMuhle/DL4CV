@@ -29,7 +29,7 @@ img_width, img_height = 224, 224
 img_shape = (img_width,img_height,3)
 
 #DL Parameters
-batch_size = 256
+batch_size = 64
 epoch_size = 10
 
 classes = ['good_for_lunch', 'good_for_dinner', 'takes_reservations', 'outdoor_seating', 'restaurant_is_expensive',
