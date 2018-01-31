@@ -17,10 +17,9 @@ def get_class_weight(train_dir):
 
 
 def preprocess_input(x):
-    x /= 255.
     x -= 0.5
     x *= 2.
-    return x
+    return x.astype('float32')
 
 def log(string):
     log_file = open(learning_data_root+"log.txt","a")

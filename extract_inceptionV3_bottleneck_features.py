@@ -32,7 +32,7 @@ img_width, img_height = 299, 299
 img_shape = (img_width,img_height,3)
 
 #DL Parameters
-batch_size = 64
+batch_size = 2
 epoch_size = 5
 
 classes = ['good_for_lunch', 'good_for_dinner', 'takes_reservations', 'outdoor_seating', 'restaurant_is_expensive',
@@ -54,7 +54,8 @@ validation_photo_to_label_dict = dict(zip(x_validation.tolist(),y_validation.tol
 # test_photo_to_label_dict = dict(zip(x_test.tolist(),y_test.tolist()))
 
 # Training data
-train_datagen = ImageDataGenerator(rotation_range=30.,
+train_datagen = ImageDataGenerator(rescale=1./255,
+                                   rotation_range=30.,
                                    shear_range=0.2,
                                    zoom_range=0.2,
                                    horizontal_flip=True,
@@ -78,7 +79,12 @@ for i in range(len(names)):
 
 
 # Validation data
-validation_datagen = ImageDataGenerator(preprocessing_function=utility.preprocess_input)
+validation_datagen = ImageDataGenerator(rescale=1./255,
+                                   rotation_range=30.,
+                                   shear_range=0.2,
+                                   zoom_range=0.2,
+                                   horizontal_flip=True,
+                                   preprocessing_function=utility.preprocess_input)
 
 utility.apply_mean(validation_datagen)
 
