@@ -2,6 +2,7 @@ from tensorflow.python.keras.models import Sequential
 import numpy as np
 import sys
 
+
 class RNNTextGeneration:
 
     # Same as in the RNN function, has to be changed afterwards
@@ -25,30 +26,29 @@ class RNNTextGeneration:
     model.compile(loss='categorical_crossentropy', optimizer='adam')
 
     # Prediction text pieces
-    predictionTextPieces = ["good_for_lunch",
-                            "good_for_dinner",
-                            "takes_reservations",
-                            "outdoor_seating",
-                            "restaurant_is_expensive",
-                            "has_alcohol",
-                            "has_table_service",
-                            "ambience_is_classy",
-                            "good_for_kids"]
-    
+    predictionTextPieces = ["The restaurant is really good for launch",
+                            "The restaurant is great  for dinner",
+                            "The restaurant takes reservations",
+                            "The restaurant has outdoor seating",
+                            "Unfortunately, the restaurant is expensive",
+                            "The restaurant has alcohol",
+                            "The restaurant has table service",
+                            "The restaurant's ambience is classy",
+                            "The restaurant is good for kids"]
 
-    def generateText(self, predictions, threshold, lengthOfSequence):
-        completeReview = ""
+    def generate_text(self, predictions, threshold, length_of_sequence):
+        complete_review = ""
         for i in range(predictions):
             if predictions[i] > threshold:
-                predictedText = self.generateTextintern(predictedText[i], lengthOfSequence)
-                completeReview = completeReview + predictedText
-        return completeReview
-        #maybe a safe function to append the complete review into a text file
+                predicted_text = self.generate_text_intern(self.predictionTextPieces[i], length_of_sequence)
+                complete_review = complete_review + predicted_text
+        return complete_review
+        # Adar maybe a safe function to append the complete review into a text file
 
-    def generateTextintern(self, sentence, lengthOfSequence):
+    def generate_text_intern(self, sentence, length_of_sequence):
         # Turns the sentence into integer for the model
         pattern = [self.char_to_int[char] for char in sentence]
-        for i in range(lengthOfSequence):
+        for i in range(length_of_sequence):
             x = np.reshape(pattern, (1, len(pattern), 1))
             x = x / float(self.n_vocab)
             prediction = self.model.predict(x, verbose=0)
@@ -59,6 +59,6 @@ class RNNTextGeneration:
             pattern.append(index)
             pattern = pattern[1:len(pattern)]
         # Turns the prediction into readable text
-        predictedText = [self.int_to_char[value] for value in pattern]
-        return predictedText
+        predicted_text = [self.int_to_char[value] for value in pattern]
+        return predicted_text
 
