@@ -25,7 +25,7 @@ test_photo_root = learning_data_root + 'photos/'
 
 # Image Parameters
 # Xception 299, 299 - VGG16 224, 224
-img_width, img_height = 224, 224
+img_width, img_height = 299, 299
 img_shape = (img_width,img_height,3)
 
 #DL Parameters
@@ -83,7 +83,7 @@ validation_multilabel_datagen = MultilabelGenerator(photo_root,
 validation_generator = validation_multilabel_datagen.flow()
 
 # Hyperparameters
-num_freezed_layers_array =[19]
+num_freezed_layers_array =[132]
 learning_rates = [0.005,0.001,0.0005]
 
 # Hyperparameter search
@@ -98,7 +98,7 @@ for num_freezed_layers in num_freezed_layers_array:
         optimizerAdam = tf.keras.optimizers.Adam(lr=lr, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0,)
 
         # Create model
-        model = VGG16Model().create_model(num_freezedLayers=num_freezed_layers, nb_classes=nb_classes,
+        model = XCeptionModel().create_model(num_freezedLayers=num_freezed_layers, nb_classes=nb_classes,
                                                 optimizer=optimizerAdam)
 
         tbCallBack = tf.keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, batch_size=batch_size, write_graph=True,
