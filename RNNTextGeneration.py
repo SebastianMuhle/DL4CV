@@ -6,7 +6,7 @@ import sys
 class RNNTextGeneration:
 
     # Same as in the RNN function, has to be changed afterwards
-    filename = "NameOfOurFile"
+    filename = "raw_review.txt"
     raw_text = open(filename).read()
     chars = sorted(list(set(raw_text)))
 
@@ -26,8 +26,8 @@ class RNNTextGeneration:
     model.compile(loss='categorical_crossentropy', optimizer='adam')
 
     # Prediction text pieces
-    predictionTextPieces = ["The restaurant is really good for launch",
-                            "The restaurant is great  for dinner",
+    predictionTextPieces = ["The restaurant is really good for lunch",
+                            "The restaurant is great for dinner",
                             "The restaurant takes reservations",
                             "The restaurant has outdoor seating",
                             "Unfortunately, the restaurant is expensive",
@@ -36,12 +36,17 @@ class RNNTextGeneration:
                             "The restaurant's ambience is classy",
                             "The restaurant is good for kids"]
 
+    def append_final_reviews(self, review):
+        review_file = open("generated_reviews.txt", "a")
+        review_file.write(review + "\n")
+
     def generate_text(self, predictions, threshold, length_of_sequence):
         complete_review = ""
         for i in range(predictions):
             if predictions[i] > threshold:
                 predicted_text = self.generate_text_intern(self.predictionTextPieces[i], length_of_sequence)
                 complete_review = complete_review + predicted_text
+        self.append_final_reviews(complete_review)
         return complete_review
         # Adar maybe a safe function to append the complete review into a text file
 

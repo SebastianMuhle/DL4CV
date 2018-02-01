@@ -5,9 +5,9 @@ from tensorflow.python.keras.layers import Dense
 from tensorflow.python.keras.layers import Dropout
 from tensorflow.python.keras.layers import LSTM
 from tensorflow.python.keras.callbacks import ModelCheckpoint
-from tensorflow.python.keras.utils import np_utils
+from keras.utils import np_utils
 
-filename = "NameOfOurFile"
+filename = "raw_review.txt"
 raw_text = open(filename).read()
 
 chars = sorted(list(set(raw_text)))
