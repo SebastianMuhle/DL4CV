@@ -114,7 +114,7 @@ for num_freezed_layers in num_freezed_layers_array:
                             validation_steps=x_validation.shape[0]/batch_size
                             )
 
-        predict = model.predict_generator(training_generator, x_train.shape[0]/batch_size)
+        predict = model.predict_generator(training_generator, x_train.shape[0]/batch_size,verbose=1)
 
         accuracy_arr = np.zeros((len(training_multilabel_datagen.directory_generator.filenames)))
         for i, n in enumerate(training_multilabel_datagen.directory_generator.filenames):
@@ -125,7 +125,7 @@ for num_freezed_layers in num_freezed_layers_array:
         utility.log("Training - F1 Score: "+str(accuracy))
         utility.log("Training - Loss: "+str(model.evaluate_generator(training_generator, x_train.shape[0]/batch_size)))
 
-        predict = model.predict_generator(validation_generator, x_validation.shape[0]/batch_size)
+        predict = model.predict_generator(validation_generator, x_validation.shape[0]/batch_size,verbose=1)
 
         accuracy_arr = np.zeros((len(validation_multilabel_datagen.directory_generator.filenames)))
         for i, n in enumerate(validation_multilabel_datagen.directory_generator.filenames):
