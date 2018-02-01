@@ -30,7 +30,7 @@ img_shape = (img_width,img_height,3)
 
 #DL Parameters
 batch_size = 64
-epoch_size = 10
+epoch_size = 20
 
 classes = ['good_for_lunch', 'good_for_dinner', 'takes_reservations', 'outdoor_seating', 'restaurant_is_expensive',
                'has_alcohol', 'has_table_service', 'ambience_is_classy', 'good_for_kids']
