@@ -8,7 +8,7 @@ from tensorflow.python.keras.callbacks import ModelCheckpoint
 from keras.utils import np_utils
 
 filename = "raw_review.txt"
-raw_text = open(filename).read()
+raw_text = open(filename, encoding='utf-8').read()
 
 chars = sorted(list(set(raw_text)))
 char_to_int = dict((c, i) for i, c in enumerate(chars))
@@ -48,7 +48,7 @@ for num_layer in num_layers:
 	for lr in learning_rates:
 		for dropoutRate in dropoutRates:
 			for hiddenDim in hiddenDims:
-
+				print(num_layer, lr, dropoutRate, hiddenDim)
 				# Create the optimizer
 				optimizerAdam = tf.keras.optimizers.Adam(lr=lr, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0,)
 
