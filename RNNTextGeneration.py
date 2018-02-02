@@ -1,4 +1,8 @@
 from tensorflow.python.keras.models import Sequential
+from tensorflow.python.keras.layers import Dense
+from tensorflow.python.keras.layers import Dropout
+from tensorflow.python.keras.layers import LSTM
+from tensorflow.python.keras.callbacks import ModelCheckpoint
 import numpy as np
 import sys
 
