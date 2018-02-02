@@ -20,7 +20,7 @@ class RNNTextGeneration:
     char_to_int = dict((c, i) for i, c in enumerate(chars))
 
     # load the network weights
-    filename = "weights-improvement-19-1.9435.hdf5"
+    filename = "weights-improvement-04-2.8221.hdf5"
     model = Sequential()
     model.load_weights(filename)
     model.compile(loss='categorical_crossentropy', optimizer='adam')
