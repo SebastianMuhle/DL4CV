@@ -57,7 +57,7 @@ class RNNTextGeneration:
 
     def generate_text(self, predictions, threshold, length_of_sequence):
         complete_review = ""
-        for i in range(predictions):
+        for i in range(predictions.shape[0]):
             if predictions[i] > threshold:
                 predicted_text = self.generate_text_intern(self.predictionTextPieces[i], length_of_sequence)
                 complete_review = complete_review + predicted_text
