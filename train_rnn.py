@@ -34,7 +34,7 @@ lr = 0.01
 dropoutRate = 0.4
 hiddenDim = 256
 
-print(num_layer, lr, dropoutRate, hiddenDim)
+print(lr, dropoutRate, hiddenDim)
 # Create the optimizer
 optimizerAdam = tf.keras.optimizers.Adam(lr=lr, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0,)
 
