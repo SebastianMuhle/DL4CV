@@ -10,4 +10,4 @@ from RNNTextGeneration import RNNTextGeneration
 
 predictions = np.array([1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 textGenerator = RNNTextGeneration()
-textGenerator.generateText(predictions,0.5,1000)
+textGenerator.generate_text(predictions,0.5,1000)

@@ -36,7 +36,7 @@ class RNNTextGeneration:
     model.add(Dropout(dropoutRate))
     model.add(LSTM(hiddenDim))
     model.add(Dropout(dropoutRate))                 
-    model.add(Dense(90, activation='softmax'))
+    model.add(Dense(191, activation='softmax'))
     model.load_weights(filename)
     model.compile(loss='categorical_crossentropy', optimizer='adam')
 
