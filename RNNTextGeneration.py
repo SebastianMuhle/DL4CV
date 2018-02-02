@@ -7,7 +7,7 @@ class RNNTextGeneration:
 
     # Same as in the RNN function, has to be changed afterwards
     filename = "raw_review.txt"
-    raw_text = open(filename).read()
+    raw_text = open(filename, encoding='utf-8').read()
     chars = sorted(list(set(raw_text)))
 
     # Info to check if we loaded the right file
