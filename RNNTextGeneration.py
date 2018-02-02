@@ -19,9 +19,17 @@ class RNNTextGeneration:
     int_to_char = dict((i, c) for i, c in enumerate(chars))
     char_to_int = dict((c, i) for i, c in enumerate(chars))
 
+    dropoutRate = 0.4
+    hiddenDim = 256
+
     # load the network weights
     filename = "weights-improvement-04-2.8221.hdf5"
     model = Sequential()
+    model.add(LSTM(hiddenDim, input_shape=(100, 1), return_sequences=True))
+    model.add(Dropout(dropoutRate))
+    model.add(LSTM(hiddenDim))
+    model.add(Dropout(dropoutRate))                 
+    model.add(Dense(90, activation='softmax'))
     model.load_weights(filename)
     model.compile(loss='categorical_crossentropy', optimizer='adam')
 
