@@ -52,7 +52,7 @@ class RNNTextGeneration:
                             "good for kids great for family good for kids great for family good for kids great for family kids   "]
 
     def append_final_reviews(self, review):
-        review_file = open(learning_data_root+"generated_reviews.txt", "a")
+        review_file = open(self.learning_data_root+"generated_reviews.txt", "a")
         review_file.write(review + "\n")
 
     def generate_text(self, predictions, threshold, length_of_sequence):
