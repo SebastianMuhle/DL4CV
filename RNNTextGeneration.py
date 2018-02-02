@@ -5,8 +5,11 @@ import sys
 
 class RNNTextGeneration:
 
+    learning_data_root = 'data/learning/'
+    models_root = learning_data_root+'models/'
+
     # Same as in the RNN function, has to be changed afterwards
-    filename = "raw_review.txt"
+    filename = learning_data_root+"raw_review.txt"
     raw_text = open(filename, encoding='utf-8').read()
     chars = sorted(list(set(raw_text)))
 
@@ -23,7 +26,7 @@ class RNNTextGeneration:
     hiddenDim = 256
 
     # load the network weights
-    filename = "weights-improvement-04-2.8221.hdf5"
+    filename = models_root+"weights-improvement-04-2.8221.hdf5"
     model = Sequential()
     model.add(LSTM(hiddenDim, input_shape=(100, 1), return_sequences=True))
     model.add(Dropout(dropoutRate))
@@ -45,7 +48,7 @@ class RNNTextGeneration:
                             "The restaurant is good for kids"]
 
     def append_final_reviews(self, review):
-        review_file = open("generated_reviews.txt", "a")
+        review_file = open(learning_data_root+"generated_reviews.txt", "a")
         review_file.write(review + "\n")
 
     def generate_text(self, predictions, threshold, length_of_sequence):

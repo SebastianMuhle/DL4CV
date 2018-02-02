@@ -7,7 +7,14 @@ from tensorflow.python.keras.layers import LSTM
 from tensorflow.python.keras.callbacks import ModelCheckpoint
 from keras.utils import np_utils
 
-filename = "raw_review.txt"
+learning_data_root = 'data/learning/'
+models_root = learning_data_root+'models/'
+photo_root = learning_data_root + 'photos/'
+train_photos_root = photo_root + 'train/'
+validation_photos_root = photo_root + 'validation/'
+
+
+filename = learning_data_root+"raw_review.txt"
 raw_text = open(filename, encoding='utf-8').read()
 
 chars = sorted(list(set(raw_text)))
@@ -73,7 +80,7 @@ for num_layer in num_layers:
 
 				# define the checkpoint #get the hyperparamters info into the saveString (see my save string func in
 				# utility
-				filepath="weights-improvement-{epoch:02d}-{loss:.4f}.hdf5"
+				filepath=models_root+"weights-improvement-{epoch:02d}-{loss:.4f}.hdf5"
 				checkpoint = ModelCheckpoint(filepath, monitor='loss', verbose=1, save_best_only=True, mode='min')
 				callbacks_list = [checkpoint]
 
