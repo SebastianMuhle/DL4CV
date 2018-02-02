@@ -24,7 +24,7 @@ seq_length = 100 # maybe change it
 X = []
 y = []
 loop_count = n_chars - seq_length
-loop_count = 10000000
+loop_count = 100000
 print("Loops: ",loop_count)
 for i in range(0, loop_count, 1):
 	print(i)
@@ -77,4 +77,4 @@ for num_layer in num_layers:
 				checkpoint = ModelCheckpoint(filepath, monitor='loss', verbose=1, save_best_only=True, mode='min')
 				callbacks_list = [checkpoint]
 
-				model.fit(X, y, epochs=20, batch_size=128, callbacks=callbacks_list)
+				model.fit(X, y, epochs=5, batch_size=128, callbacks=callbacks_list)
