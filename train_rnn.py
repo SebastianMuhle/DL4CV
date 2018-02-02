@@ -15,7 +15,7 @@ validation_photos_root = photo_root + 'validation/'
 
 
 epoch_size = 20
-loop_in_epoch = 2500000000/100000
+loop_in_epoch = 25000
 
 filename = learning_data_root+"raw_review.txt"
 raw_text = open(filename, encoding='utf-8').read()
