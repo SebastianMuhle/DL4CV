@@ -79,6 +79,7 @@ class RNNTextGeneration:
             pattern.append(index)
             pattern = pattern[1:len(pattern)]
         # Turns the prediction into readable text
-        predicted_text = [self.int_to_char[value] for value in pattern]
+        prediction_list = [self.int_to_char[value] for value in pattern]
+        predicted_text = ''.join(map(str, prediction_list))
         return predicted_text
 
