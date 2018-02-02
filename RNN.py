@@ -58,9 +58,11 @@ for num_layer in num_layers:
 				model = Sequential()
 				model.add(LSTM(hiddenDim, input_shape=(X.shape[1], X.shape[2]), return_sequences=True))
 				model.add(Dropout(dropoutRate))
-				for i in range(num_layer - 1):
-					model.add(LSTM(hiddenDim, return_sequences=True))
+				for i in range(num_layer - 2):
+					model.add(LSTM(hiddenDim),return_sequences=True)
 					model.add(Dropout(dropoutRate))
+				model.add(LSTM(hiddenDim))
+				model.add(Dropout(dropoutRate))					
 				model.add(Dense(y.shape[1], activation='softmax'))
 				model.compile(loss='categorical_crossentropy', optimizer=optimizerAdam)
 
