@@ -41,15 +41,15 @@ class RNNTextGeneration:
     model.compile(loss='categorical_crossentropy', optimizer='adam')
 
     # Prediction text pieces
-    predictionTextPieces = ["The restaurant is really good for lunch                                                             ",
-                            "The restaurant is great for dinner                                                                  ",
-                            "The restaurant takes reservations                                                                   ",
-                            "The restaurant has outdoor seating                                                                  ",
-                            "Unfortunately, the restaurant is expensive                                                          ",
-                            "The restaurant has alcohol                                                                          ",
-                            "The restaurant has table service                                                                    ",
-                            "The restaurant's ambience is classy                                                                 ",
-                            "The restaurant is good for kids                                                                     "]
+    predictionTextPieces = ["good for lunch good for lunch good for lunch great for lunch great for lunch great for lunch lunch  ",
+                            "great for dinner great for dinner great for dinner great for dinner great for dinner good for dinner",
+                            "takes reservations takes reservations takes reservations takes reservations takes reservations res  ",
+                            "outdoor seating outdoor seating outdoor seating outdoor seating outdoor seating outdoor outdoor seat",
+                            "Unfortunately expensive Unfortunately expensive Unfortunately expensive Unfortunately expensive exp ",
+                            "drink alcohol drink alcohol drink alcohol drink alcohol drink alcohol drink alcohol drink alcohol   ",
+                            "table service table service table service table service table service table service table service   ",
+                            "classy ambience classy ambience classy ambience classy ambience classy ambience classy ambience     ",
+                            "good for kids great for family good for kids great for family good for kids great for family kids   "]
 
     def append_final_reviews(self, review):
         review_file = open(learning_data_root+"generated_reviews.txt", "a")
