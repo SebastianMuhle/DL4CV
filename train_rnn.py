@@ -51,35 +51,33 @@ model.compile(loss='categorical_crossentropy', optimizer=optimizerAdam)
 # utility
 filepath=models_root+"rnn.hdf5"
 
-for i in range(epoch_size):
-	for j in range(loop_in_epoch):
-		# prepare the dataset of input to output pairs encoded as integers
-		seq_length = 100 # maybe change it
-		X = []
-		y = []
-		loop_count = 100000*(j+1)
-		print("Loops: ",loop_count)
-		for i in range(100000*j, loop_count, 1):
-			if i % 100 == 0:
-				print(i)
-			seq_in = raw_text[i:i + seq_length]
-			seq_out = raw_text[i + seq_length]
-			X.append([char_to_int[char] for char in seq_in])
-			y.append(char_to_int[seq_out])
-		n_patterns = len(X)
-		print("Total Patterns: ", n_patterns)
+# prepare the dataset of input to output pairs encoded as integers
+seq_length = 100 # maybe change it
+X = []
+y = []
+loop_count = 200000
+print("Loops: ",loop_count)
+for i in range(0, loop_count, 1):
+	if i % 100 == 0:
+		print(i)
+	seq_in = raw_text[i:i + seq_length]
+	seq_out = raw_text[i + seq_length]
+	X.append([char_to_int[char] for char in seq_in])
+	y.append(char_to_int[seq_out])
+n_patterns = len(X)
+print("Total Patterns: ", n_patterns)
 
-		char_to_int = None
-		int_to_char = None
+char_to_int = None
+int_to_char = None
 
-		# reshape X to be [samples, time steps, features]
-		X = numpy.reshape(numpy.array(X), (n_patterns, seq_length, 1))
-		# normalize
-		X = X / float(n_vocab)
-		# one hot encode the output variable
-		y = np_utils.to_categorical(y)
+# reshape X to be [samples, time steps, features]
+X = numpy.reshape(numpy.array(X), (n_patterns, seq_length, 1))
+# normalize
+X = X / float(n_vocab)
+# one hot encode the output variable
+y = np_utils.to_categorical(y)
 
-		checkpoint = ModelCheckpoint(filepath, monitor='loss', verbose=1, save_best_only=True, mode='min')
-		callbacks_list = [checkpoint]
+checkpoint = ModelCheckpoint(filepath, monitor='loss', verbose=1, save_best_only=True, mode='min')
+callbacks_list = [checkpoint]
 
-		model.fit(X, y, batch_size=100, callbacks=callbacks_list)
+model.fit(X, y, epochs=50, batch_size=100, callbacks=callbacks_list)
