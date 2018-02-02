@@ -119,6 +119,8 @@ for num_freezed_layers in num_freezed_layers_array:
                             validation_steps=x_validation.shape[0]/batch_size
                             )
 
+        model.load_weights(filepath)
+
         predict = model.predict_generator(training_generator, x_train.shape[0]/batch_size,verbose=1)
 
         accuracy_arr = np.zeros((len(training_multilabel_datagen.directory_generator.filenames)))
@@ -140,6 +142,3 @@ for num_freezed_layers in num_freezed_layers_array:
 
         utility.log("Validation - F1 Score: "+str(accuracy))
         utility.log("Validation - Loss: "+str(model.evaluate_generator(validation_generator, x_validation.shape[0]/batch_size)))
-
-        model.save(save_string)
-        model.save_weights(utility.save_weights_url(num_freezed_layers, lr))
