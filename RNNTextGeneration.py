@@ -41,15 +41,15 @@ class RNNTextGeneration:
     model.compile(loss='categorical_crossentropy', optimizer='adam')
 
     # Prediction text pieces
-    predictionTextPieces = ["The restaurant is really good for lunch",
-                            "The restaurant is great for dinner",
-                            "The restaurant takes reservations",
-                            "The restaurant has outdoor seating",
-                            "Unfortunately, the restaurant is expensive",
-                            "The restaurant has alcohol",
-                            "The restaurant has table service",
-                            "The restaurant's ambience is classy",
-                            "The restaurant is good for kids"]
+    predictionTextPieces = ["The restaurant is really good for lunch                                                             ",
+                            "The restaurant is great for dinner                                                                  ",
+                            "The restaurant takes reservations                                                                   ",
+                            "The restaurant has outdoor seating                                                                  ",
+                            "Unfortunately, the restaurant is expensive                                                          ",
+                            "The restaurant has alcohol                                                                          ",
+                            "The restaurant has table service                                                                    ",
+                            "The restaurant's ambience is classy                                                                 ",
+                            "The restaurant is good for kids                                                                     "]
 
     def append_final_reviews(self, review):
         review_file = open(learning_data_root+"generated_reviews.txt", "a")
