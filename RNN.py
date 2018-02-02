@@ -32,8 +32,11 @@ for i in range(0, loop_count, 1):
 	seq_out = raw_text[i + seq_length]
 	X.append([char_to_int[char] for char in seq_in])
 	y.append(char_to_int[seq_out])
-n_patterns = len(dataX)
+n_patterns = len(X)
 print("Total Patterns: ", n_patterns)
+
+char_to_int = None
+int_to_char = None
 
 # reshape X to be [samples, time steps, features]
 X = numpy.reshape(numpy.array(X), (n_patterns, seq_length, 1))
