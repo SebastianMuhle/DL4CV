@@ -3,6 +3,7 @@ import numpy as np
 import tensorflow as tf
 import pandas as pd
 from tensorflow.python.keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_array, load_img
+from tensorflow.python.keras.callbacks import ModelCheckpoint
 from tensorflow.python.keras.utils import to_categorical
 from InceptionV3model import InceptionV3model
 from XceptionModel import XCeptionModel
@@ -16,6 +17,7 @@ from MultilabelGenerator import MultilabelGenerator
 
 
 learning_data_root = 'data/learning/'
+models_root = learning_data_root + 'models/'
 photo_root = learning_data_root + 'photos/'
 train_photos_root = photo_root + 'train/'
 validation_photos_root = photo_root + 'validation/'
@@ -30,7 +32,7 @@ img_shape = (img_width,img_height,3)
 
 #DL Parameters
 batch_size = 64
-epoch_size = 20
+epoch_size = 50
 
 classes = ['good_for_lunch', 'good_for_dinner', 'takes_reservations', 'outdoor_seating', 'restaurant_is_expensive',
                'has_alcohol', 'has_table_service', 'ambience_is_classy', 'good_for_kids']
@@ -105,6 +107,9 @@ for num_freezed_layers in num_freezed_layers_array:
                                     write_grads=False, write_images=False,
                                     #embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None
                                         )
+
+        filepath=models_root+"weights_xception.hdf5"
+        checkpoint = ModelCheckpoint(filepath, monitor='val_loss', verbose=1, save_best_only=True, mode='min')
 
         model.fit_generator(training_generator,
                             steps_per_epoch=x_train.shape[0]/batch_size,  # nb_train_samples,
