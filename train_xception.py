@@ -31,7 +31,7 @@ img_width, img_height = 299, 299
 img_shape = (img_width,img_height,3)
 
 #DL Parameters
-batch_size = 32
+batch_size = 16
 epoch_size = 50
 
 classes = ['good_for_lunch', 'good_for_dinner', 'takes_reservations', 'outdoor_seating', 'restaurant_is_expensive',
@@ -116,7 +116,8 @@ for num_freezed_layers in num_freezed_layers_array:
                             epochs=epoch_size,
                             verbose=1,
                             validation_data=validation_generator,
-                            validation_steps=x_validation.shape[0]/batch_size
+                            validation_steps=x_validation.shape[0]/batch_size,
+                            callbacks=[checkpoint]
                             )
 
         model.load_weights(filepath)
