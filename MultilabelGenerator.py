@@ -15,8 +15,11 @@ class MultilabelGenerator:
         names_generator = self.grouper(self.batch_size, self.directory_generator.filenames)
         for (X_batch, _), names in zip(self.directory_generator, names_generator):
             names = [n.split('/')[-1].replace('.jpg','') for n in names]
-            targets = [self.photo_name_to_label_dict[int(x)] for x in names]
-            yield X_batch, targets
+            if (self.train_or_valid == 'test'):
+                yield X_batch
+            else:
+                targets = [self.photo_name_to_label_dict[int(x)] for x in names]
+                yield X_batch, targets
 
     def grouper(self, n, iterable, padvalue=None):
         g = cycle(zip(*[chain(iterable, repeat(padvalue, n-1))]*n))
