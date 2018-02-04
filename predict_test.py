@@ -39,6 +39,8 @@ def prediction_to_df(photo_to_prediction_dict,photo_to_business_dict,x_biz):
 			if prediction_str != '':
 				prediction_str = prediction_str[:-1]
 			business_to_label_dict[business] = prediction_str
+		else:
+			business_to_label_dict[business] = None
 	df = pd.DataFrame(list(business_to_label_dict.items()),columns=['business_id','labels'])
 	return df
 	
