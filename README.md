@@ -20,48 +20,48 @@ In this project, we have used ```Keras``` with ```Tensorflow``` backend. We have
 
 The folder structure should be like below:
 
-/split.py
-/organize_photos.py 
-/reorganize_photos.py
-/MultilabelGenerator.py
-/TopClassifier.py
-/utility.py
-/VGG16.py
-/VGG16_bottleneck.py
-/InceptionV3model.py 
-/InceptionV3_bottleneck.py 
-/XceptionModel.py 
-/Xception_bottleneck.py
-/train_vgg16.py
-/extract_vgg16_bottleneck_features.py
-/train_vgg16_bottleneck.py
-/train_inceptionv3.py
-/extract_inceptionV3_bottleneck_features.py
-/train_inceptionV3_bottleneck.py
-/train_xception.py
-/extract_xception_bottleneck_features.py
-/train_xception_bottleneck.py
-/predict_inceptionv3.py
-/predict_xception.py
-/predict_test.py 
-/parse_reviews.py 
-/RNNTextGeneration.py 
-/train_rnn.py
-/RNN.py 
-/generate_text.py 
-/data/
-/data/learning/
-/data/learning/review.json
-/data/learning/train.csv
-/data/learning/train_photo_to_biz_ids.csv
-/data/learning/photos - all training photos should be in this folder first
-/data/learning/photos/train
-/data/learning/photos/validation
-/data/learning/models - it should be empty before training
-/data/test
-/data/test/test_photo_to_biz.csv
-/data/test/photos 
-/data/test/photos/test - all test photos should be in this folder
+/split.py  
+/organize_photos.py  
+/reorganize_photos.py  
+/MultilabelGenerator.py  
+/TopClassifier.py  
+/utility.py  
+/VGG16.py  
+/VGG16_bottleneck.py  
+/InceptionV3model.py   
+/InceptionV3_bottleneck.py  
+/XceptionModel.py  
+/Xception_bottleneck.py  
+/train_vgg16.py  
+/extract_vgg16_bottleneck_features.py  
+/train_vgg16_bottleneck.py  
+/train_inceptionv3.py  
+/extract_inceptionV3_bottleneck_features.py  
+/train_inceptionV3_bottleneck.py  
+/train_xception.py  
+/extract_xception_bottleneck_features.py  
+/train_xception_bottleneck.py  
+/predict_inceptionv3.py  
+/predict_xception.py  
+/predict_test.py   
+/parse_reviews.py   
+/RNNTextGeneration.py   
+/train_rnn.py  
+/RNN.py   
+/generate_text.py   
+/data/  
+/data/learning/  
+/data/learning/review.json  
+/data/learning/train.csv  
+/data/learning/train_photo_to_biz_ids.csv  
+/data/learning/photos - all training photos should be in this folder first  
+/data/learning/photos/train  
+/data/learning/photos/validation  
+/data/learning/models - it should be empty before training  
+/data/test  
+/data/test/test_photo_to_biz.csv  
+/data/test/photos   
+/data/test/photos/test - all test photos should be in this folder  
 
 ## Training
 
