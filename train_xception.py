@@ -103,7 +103,7 @@ for num_freezed_layers in num_freezed_layers_array:
         filepath=models_root+"weights_xception_full.hdf5"
         model = XCeptionModel().create_model(num_freezedLayers=num_freezed_layers, nb_classes=nb_classes,
                                                 optimizer=optimizerAdam)
-        model.load_weights(filepath)
+        # model.load_weights(filepath)
 
         tbCallBack = tf.keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, batch_size=batch_size, write_graph=True,
                                     write_grads=False, write_images=False,

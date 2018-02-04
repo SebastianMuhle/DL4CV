@@ -103,7 +103,7 @@ for num_freezed_layers in num_freezed_layers_array:
         filepath=models_root+"weights_inceptionv3_full.hdf5"
         model = InceptionV3model().create_model(num_freezedLayers=num_freezed_layers, nb_classes=nb_classes,
                                                 optimizer=optimizerAdam)
-        model.load_weights(filepath)
+        # model.load_weights(filepath)
 
         tbCallBack = tf.keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, batch_size=batch_size, write_graph=True,
                                     write_grads=False, write_images=False,
@@ -121,7 +121,7 @@ for num_freezed_layers in num_freezed_layers_array:
                             callbacks=[checkpoint]
                             )
 
-        model.load_weights(filepath)
+        # model.load_weights(filepath)
 
         # predict = model.predict_generator(training_generator, x_train.shape[0]/batch_size,verbose=1)
 
