@@ -27,11 +27,7 @@ def prediction_to_df(photo_to_prediction_dict,photo_to_business_dict,x_biz):
 	df = pd.merge(df,df2, on='photo_id')
 	x_biz = list(set(x_biz))
 	business_to_label_dict = {}
-	i = 0
 	for business in x_biz:
-		i += 1
-		if i % 100 == 0:
-			print(str(i)+". Business")
 		business_df = df[df['business_id']==business]
 		if (business_df.empty==False):
 			predictions = np.asarray(list(business_df['prediction'].values))
