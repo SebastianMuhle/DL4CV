@@ -41,15 +41,15 @@ class RNNTextGeneration:
     model.compile(loss='categorical_crossentropy', optimizer='adam')
 
     # Prediction text pieces
-    predictionTextPieces = ["good for lunch good for lunch good for lunch great for lunch great for lunch great for lunch lunch  ",
-                            "great for dinner great for dinner great for dinner great for dinner great for dinner good for dinner",
-                            "takes reservations takes reservations takes reservations takes reservations takes reservations res  ",
-                            "outdoor seating outdoor seating outdoor seating outdoor seating outdoor seating outdoor outdoor seat",
-                            "Unfortunately expensive Unfortunately expensive Unfortunately expensive Unfortunately expensive exp ",
-                            "drink alcohol drink alcohol drink alcohol drink alcohol drink alcohol drink alcohol drink alcohol   ",
-                            "table service table service table service table service table service table service table service   ",
-                            "classy ambience classy ambience classy ambience classy ambience classy ambience classy ambience     ",
-                            "good for kids great for family good for kids great for family good for kids great for family kids   "]
+    predictionTextPieces = ["This place is really good for lunch. We had a great time. I would prefer everyone to lunch in this  ",
+                            "This place is really great for dinner. Food was really delicious. I would prefer this place to anyon",
+                            "This place is a nice place with reservations. You don't wait outside, while it takes reservations   ",
+                            "This place is amazing. It has outdoor seating where you can smoke. It has a good view from outdoor  ",
+                            "This place is really nice, but it is unfortunately expensive. I would go there for special occasions",
+                            "This place is a nice place with different beverage options. I would recommend to drink some alcohol ",
+                            "This place is a really nice place with table service. I think that the waiters are generally normal ",
+                            "This place is an unique place with classy ambience. I would recommend to go there in special days   ",
+                            "This place is really good for families with kids. They have a playground for kids, so you can relax "]
 
     def append_final_reviews(self, review):
         review_file = open(self.learning_data_root+"generated_reviews.txt", "a")
