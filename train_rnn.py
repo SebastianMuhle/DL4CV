@@ -42,6 +42,10 @@ optimizerAdam = tf.keras.optimizers.Adam(lr=lr, beta_1=0.9, beta_2=0.999, epsilo
 model = Sequential()
 model.add(LSTM(hiddenDim, input_shape=(100, 1), return_sequences=True))
 model.add(Dropout(dropoutRate))
+model.add(LSTM(hiddenDim,return_sequences=True))
+model.add(Dropout(dropoutRate))
+model.add(LSTM(hiddenDim,return_sequences=True))
+model.add(Dropout(dropoutRate))
 model.add(LSTM(hiddenDim))
 model.add(Dropout(dropoutRate))					
 model.add(Dense(191, activation='softmax'))
@@ -49,13 +53,13 @@ model.compile(loss='categorical_crossentropy', optimizer=optimizerAdam)
 
 # define the checkpoint #get the hyperparamters info into the saveString (see my save string func in
 # utility
-filepath=models_root+"rnn.hdf5"
+filepath=models_root+"rnn_2.hdf5"
 
 # prepare the dataset of input to output pairs encoded as integers
 seq_length = 100 # maybe change it
 X = []
 y = []
-loop_count = 200000
+loop_count = 500000
 print("Loops: ",loop_count)
 for i in range(0, loop_count, 1):
 	if i % 100 == 0:
@@ -80,4 +84,4 @@ y = np_utils.to_categorical(y)
 checkpoint = ModelCheckpoint(filepath, monitor='loss', verbose=1, save_best_only=True, mode='min')
 callbacks_list = [checkpoint]
 
-model.fit(X, y, epochs=50, batch_size=100, callbacks=callbacks_list)
+model.fit(X, y, epochs=200, batch_size=100, callbacks=callbacks_list)

@@ -30,9 +30,13 @@ class RNNTextGeneration:
     hiddenDim = 256
 
     # load the network weights
-    filename = models_root+"rnn.hdf5"
+    filename = models_root+"rnn_2.hdf5"
     model = Sequential()
     model.add(LSTM(hiddenDim, input_shape=(100, 1), return_sequences=True))
+    model.add(Dropout(dropoutRate))
+    model.add(LSTM(hiddenDim,return_sequences=True))
+    model.add(Dropout(dropoutRate))
+    model.add(LSTM(hiddenDim,return_sequences=True))
     model.add(Dropout(dropoutRate))
     model.add(LSTM(hiddenDim))
     model.add(Dropout(dropoutRate))                 
@@ -68,6 +72,7 @@ class RNNTextGeneration:
     def generate_text_intern(self, sentence, length_of_sequence):
         # Turns the sentence into integer for the model
         pattern = [self.char_to_int[char] for char in sentence]
+        generated_sentence = ''
         for i in range(length_of_sequence):
             x = np.reshape(pattern, (1, len(pattern), 1))
             x = x / float(self.n_vocab)
@@ -75,11 +80,10 @@ class RNNTextGeneration:
             index = np.argmax(prediction)
             result = self.int_to_char[index]
             seq_in = [self.int_to_char[value] for value in pattern]
-            sys.stdout.write(result)
+            generated_sentence += result
             pattern.append(index)
             pattern = pattern[1:len(pattern)]
         # Turns the prediction into readable text
-        prediction_list = [self.int_to_char[value] for value in pattern]
-        predicted_text = ''.join(map(str, prediction_list))
-        return predicted_text
+        print(generated_sentence)
+        return generated_sentence
 
