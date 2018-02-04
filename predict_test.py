@@ -30,7 +30,6 @@ def prediction_to_df(photo_to_prediction_dict,photo_to_business_dict,x_biz):
 	for business in x_biz:
 		business_df = df[df['business_id']==business]
 		if (business_df.empty==False):
-			print(business)
 			predictions = np.asarray(list(business_df['prediction'].values))
 			prediction = np.around(np.sum(predictions,axis=0)/predictions.shape[0]).tolist()
 			prediction_str = ''
@@ -39,7 +38,6 @@ def prediction_to_df(photo_to_prediction_dict,photo_to_business_dict,x_biz):
 					prediction_str += str(i)+" "
 			if prediction_str != '':
 				prediction_str = prediction_str[:-1]
-			print(prediction_str)
 			business_to_label_dict[business] = prediction_str
 	df = pd.DataFrame(list(business_to_label_dict.items()),columns=['business_id','labels'])
 	return df
@@ -109,7 +107,4 @@ for num_freezed_layers in num_freezed_layers_array:
 
 		photo_to_prediction_dict = dict(zip(names,predictions))
 
-		print(names)
-		print(predictions)
-
-		prediction_to_df(photo_to_prediction_dict,photo_to_business_dict,x_biz)
+		prediction_to_df(photo_to_prediction_dict,photo_to_business_dict,x_biz).to_csv(test_data_root+"results.csv")
