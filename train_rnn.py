@@ -15,7 +15,7 @@ validation_photos_root = photo_root + 'validation/'
 
 
 epoch_size = 20
-loop_in_epoch = 25000
+loop_in_epoch = 5000
 
 filename = learning_data_root+"raw_review.txt"
 raw_text = open(filename, encoding='utf-8').read()
@@ -28,32 +28,6 @@ n_chars = len(raw_text)
 n_vocab = len(chars)
 print("Total Characters: ", n_chars)
 print("Total Vocab: ", n_vocab)
-
-# Hyperparameters
-lr = 0.01
-dropoutRate = 0.4
-hiddenDim = 256
-
-print(lr, dropoutRate, hiddenDim)
-# Create the optimizer
-optimizerAdam = tf.keras.optimizers.Adam(lr=lr, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0,)
-
-# define the LSTM model
-model = Sequential()
-model.add(LSTM(hiddenDim, input_shape=(100, 1), return_sequences=True))
-model.add(Dropout(dropoutRate))
-model.add(LSTM(hiddenDim,return_sequences=True))
-model.add(Dropout(dropoutRate))
-model.add(LSTM(hiddenDim,return_sequences=True))
-model.add(Dropout(dropoutRate))
-model.add(LSTM(hiddenDim))
-model.add(Dropout(dropoutRate))					
-model.add(Dense(191, activation='softmax'))
-model.compile(loss='categorical_crossentropy', optimizer=optimizerAdam)
-
-# define the checkpoint #get the hyperparamters info into the saveString (see my save string func in
-# utility
-filepath=models_root+"rnn_2.hdf5"
 
 # prepare the dataset of input to output pairs encoded as integers
 seq_length = 100 # maybe change it
@@ -81,7 +55,33 @@ X = X / float(n_vocab)
 # one hot encode the output variable
 y = np_utils.to_categorical(y)
 
+# Hyperparameters
+lr = 0.01
+dropoutRate = 0.4
+hiddenDim = 256
+
+print(lr, dropoutRate, hiddenDim)
+# Create the optimizer
+optimizerAdam = tf.keras.optimizers.Adam(lr=lr, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0,)
+
+# define the LSTM model
+model = Sequential()
+model.add(LSTM(hiddenDim, input_shape=(X.shape[1], X.shape[2]), return_sequences=True))
+model.add(Dropout(dropoutRate))
+model.add(LSTM(hiddenDim,return_sequences=True))
+model.add(Dropout(dropoutRate))
+model.add(LSTM(hiddenDim,return_sequences=True))
+model.add(Dropout(dropoutRate))
+model.add(LSTM(hiddenDim))
+model.add(Dropout(dropoutRate))					
+model.add(Dense(y.shape[1], activation='softmax'))
+model.compile(loss='categorical_crossentropy', optimizer=optimizerAdam)
+
+# define the checkpoint #get the hyperparamters info into the saveString (see my save string func in
+# utility
+filepath=models_root+"rnn_2.hdf5"
+
 checkpoint = ModelCheckpoint(filepath, monitor='loss', verbose=1, save_best_only=True, mode='min')
 callbacks_list = [checkpoint]
 
-model.fit(X, y, epochs=200, batch_size=100, callbacks=callbacks_list)
+model.fit(X, y, epochs=200, batch_size=256, callbacks=callbacks_list)
