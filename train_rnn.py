@@ -14,9 +14,6 @@ train_photos_root = photo_root + 'train/'
 validation_photos_root = photo_root + 'validation/'
 
 
-epoch_size = 20
-loop_in_epoch = 5000
-
 filename = learning_data_root+"raw_review.txt"
 raw_text = open(filename, encoding='utf-8').read()
 
@@ -33,7 +30,7 @@ print("Total Vocab: ", n_vocab)
 seq_length = 100 # maybe change it
 X = []
 y = []
-loop_count = 500000
+loop_count = 200000
 print("Loops: ",loop_count)
 for i in range(0, loop_count, 1):
 	if i % 100 == 0:
