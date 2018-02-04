@@ -86,7 +86,7 @@ validation_generator = validation_multilabel_datagen.flow()
 
 # Hyperparameters
 num_freezed_layers_array =[311]
-learning_rates = [0.001]
+learning_rates = [0.0005]
 
 # Hyperparameter search
 for num_freezed_layers in num_freezed_layers_array:
@@ -100,15 +100,16 @@ for num_freezed_layers in num_freezed_layers_array:
         optimizerAdam = tf.keras.optimizers.Adam(lr=lr, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0,)
 
         # Create model
+        filepath=models_root+"weights_inceptionv3.hdf5"
         model = InceptionV3model().create_model(num_freezedLayers=num_freezed_layers, nb_classes=nb_classes,
                                                 optimizer=optimizerAdam)
+        model.load_weights(filepath)
 
         tbCallBack = tf.keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, batch_size=batch_size, write_graph=True,
                                     write_grads=False, write_images=False,
                                     #embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None
                                         )
 
-        filepath=models_root+"weights_inceptionv3.hdf5"
         checkpoint = ModelCheckpoint(filepath, monitor='val_loss', verbose=1, save_best_only=True, mode='min')
 
         model.fit_generator(training_generator,
