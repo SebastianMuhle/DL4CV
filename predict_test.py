@@ -27,7 +27,10 @@ def prediction_to_df(photo_to_prediction_dict,photo_to_business_dict,x_biz):
 	df = pd.merge(df,df2, on='photo_id')
 	x_biz = list(set(x_biz))
 	business_to_label_dict = {}
+	i = 0
 	for business in x_biz:
+		if i % 100 == 0:
+			print(str(i+1)+". Business")
 		business_df = df[df['business_id']==business]
 		if (business_df.empty==False):
 			predictions = np.asarray(list(business_df['prediction'].values))
@@ -107,4 +110,6 @@ for num_freezed_layers in num_freezed_layers_array:
 
 		photo_to_prediction_dict = dict(zip(names,predictions))
 
-		prediction_to_df(photo_to_prediction_dict,photo_to_business_dict,x_biz).to_csv(test_data_root+"results.csv")
+		print("Prediction part is finished.")
+
+		prediction_to_df(photo_to_prediction_dict,photo_to_business_dict,x_biz).to_csv(test_data_root+"results.csv",index=False)
