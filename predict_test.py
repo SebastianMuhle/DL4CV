@@ -15,16 +15,15 @@ from PIL import Image
 import h5py
 from MultilabelGenerator import MultilabelGenerator
 
-learning_data_root = 'data/learning'
+learning_data_root = 'data/learning/'
 test_data_root = 'data/test/'
 models_root = learning_data_root + 'models/'
 photo_root = test_data_root + 'photos/'
 
 def prediction_to_csv(photo_to_prediction_dict,photo_to_business_dict,x_biz):
-	df = pd.DataFrame(list(photo_to_prediction_dict.items()))
-	df2 = pd.DataFrame(list(photo_to_business_dict.items()))
-	df = pd.merge(df,df2, on="photo_id")
-
+	df = pd.DataFrame(list(photo_to_prediction_dict.items()),columns=['photo_id','prediction'])
+	df2 = pd.DataFrame(list(photo_to_business_dict.items()),columns=['photo_id','business_id'])
+	df = pd.merge(df,df2, on='photo_id')
 	x_biz = list(set(x_biz))
 	business_to_label_dict = {}
 	for business in x_biz:
@@ -71,7 +70,7 @@ test_multilabel_datagen = MultilabelGenerator(photo_root,
                                     target_size=(img_width,img_height),
                                     train_or_valid='test')
 
-test_generator = training_multilabel_datagen.flow()
+test_generator = test_multilabel_datagen.flow()
 
 # Hyperparameters
 num_freezed_layers_array =[132]
@@ -88,8 +87,10 @@ for num_freezed_layers in num_freezed_layers_array:
                                                 optimizer=optimizerAdam)
 		model.load_weights(filepath)
 
-		predictions = model.predict_generator(test_generator, x_test.shape[0]/batch_size,verbose=1)
+		predictions = model.predict_generator(test_generator, len(test_multilabel_datagen.directory_generator.filenames)/batch_size,verbose=1)
 
-		photo_to_prediction_dict = dict(zip(test_multilabel_datagen.directory_generator.filenames,predictions))
+		names = [n.split('/')[-1].replace('.jpg','') for n in test_multilabel_datagen.directory_generator.filenames]
 
-		prediction_to_csv(photo_to_prediction_dict,predictions,photo_to_business_dict,x_biz)
+		photo_to_prediction_dict = dict(zip(names,predictions))
+
+		prediction_to_csv(photo_to_prediction_dict,photo_to_business_dict,x_biz)
