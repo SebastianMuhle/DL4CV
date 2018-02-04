@@ -67,18 +67,24 @@ The folder structure should be like below:
 
 ### 1. CNN
 
-#### Preparing the data for CNNs
+#### Preparing the data for Hyperparameter Research
 1. Check that all ```train.csv``` and ```train_photo_to_biz_ids.csv``` are in the ```/data/learning/``` folder, and all of the training photos are in the ```/data/learning/photos/``` folder.
-2. Run ```python3 split.py``` to split the learning data to training and validation.
+2. Run ```python3 split.py``` to split the learning data to training and validation. Don't forget to set the ```test_size``` attribute in ```line 5``` to your wanted rate of training and validation data.
 3. Run ```python3 organize_photos.py``` to move the training and validation photos to their folders.
+
+#### Preparing the data for Training
+1. Check that all ```train.csv``` and ```train_photo_to_biz_ids.csv``` are in the ```/data/learning/``` folder, and all of the training photos are in the ```/data/learning/photos/``` folder.
+2. Run ```python3 reorganize_photos.py``` command to move the photos their original folder.
+3. Run ```python3 split.py``` to split the learning data to training and validation. Don't forget to set the ```test_size``` attribute in ```line 5``` to ```0``` for no validation data.
+4. Run ```python3 organize_photos.py``` to move the training and validation photos to their folders.
 
 #### Training InceptionV3
 1. Run ```python3 train_inceptionv3.py``` command. After this command executes, there should be a ```weights_inceptionv3.hdf5``` file in your ```/data/learning/models/``` folder.
-2. Run ```python3 predict_inceptionv3.py``` command to get the predictions and F1-Scores for your training and validation data.
+2. Run ```python3 predict_inceptionv3.py``` command to get the predictions and F1-Scores for your training (and for hyperparameter research validation) data.
 
 #### Training Xception
 1. Run ```python3 train_xception.py``` command. After this command executes, there should be a ```weights_xception.hdf5``` file in your ```/data/learning/models/``` folder.
-2. Run ```python3 predict_xception.py``` command to get the predictions and F1-Scores for your training and validation data.
+2. Run ```python3 predict_xception.py``` command to get the predictions and F1-Scores for your training (and for hyperparameter research validation) data.
 
 #### Test Data
 1. Run ```python3 predict_test.py``` command. After this command executes, there should be a ```results.csv``` file in your ```/data/test/``` folder. You can upload this file to kaggle.
