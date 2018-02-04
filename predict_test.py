@@ -96,9 +96,9 @@ for num_freezed_layers in num_freezed_layers_array:
 
 		optimizerAdam = tf.keras.optimizers.Adam(lr=lr, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0,)
 
-		filepath=models_root+"weights_inceptionv3.hdf5"
+		filepath=models_root+"weights_xception_full.hdf5"
 
-		model = InceptionV3model().create_model(num_freezedLayers=num_freezed_layers, nb_classes=nb_classes,
+		model = XCeptionModel().create_model(num_freezedLayers=num_freezed_layers, nb_classes=nb_classes,
                                                 optimizer=optimizerAdam)
 
 		model.load_weights(filepath)

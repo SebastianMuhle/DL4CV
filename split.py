@@ -52,7 +52,7 @@ y_learning = np.asarray(train.ix[:,4:].values.tolist())
 print("Splitting Learnind Data to Train and Validation")
 
 # split train in train and validation
-x_train, x_validation, y_train, y_validation = train_test_split(x_learning, y_learning, test_size=0.25, random_state=42)
+x_train, x_validation, y_train, y_validation = train_test_split(x_learning, y_learning, test_size=0, random_state=42)
 
 # x_train = x_train[:7500]
 # y_train = y_train[:7500]
