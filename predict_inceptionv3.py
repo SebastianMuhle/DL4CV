@@ -89,9 +89,9 @@ learning_rates = [0.0005]
 
 # Hyperparameter search
 for num_freezed_layers in num_freezed_layers_array:
-    for lr in learning_rates:
+	for lr in learning_rates:
 
-    	optimizerAdam = tf.keras.optimizers.Adam(lr=lr, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0,)
+		optimizerAdam = tf.keras.optimizers.Adam(lr=lr, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0,)
 
 		filepath=models_root+"weights_inceptionv3.hdf5"
 		model = InceptionV3model().create_model(num_freezedLayers=num_freezed_layers, nb_classes=nb_classes,
@@ -102,8 +102,8 @@ for num_freezed_layers in num_freezed_layers_array:
 
 		accuracy_arr = np.zeros((len(training_multilabel_datagen.directory_generator.filenames)))
 		for i, n in enumerate(training_multilabel_datagen.directory_generator.filenames):
-		    key = int(n.split('/')[-1].replace('.jpg',''))
-		    accuracy_arr[i] = f1_score(np.asarray(training_multilabel_datagen.photo_name_to_label_dict[key]),np.around(np.asarray(predict[i])))
+			key = int(n.split('/')[-1].replace('.jpg',''))
+			accuracy_arr[i] = f1_score(np.asarray(training_multilabel_datagen.photo_name_to_label_dict[key]),np.around(np.asarray(predict[i])))
 		accuracy = np.mean(accuracy_arr)
 
 		utility.log("Training - F1 Score: "+str(accuracy))
@@ -113,8 +113,8 @@ for num_freezed_layers in num_freezed_layers_array:
 
 		accuracy_arr = np.zeros((len(validation_multilabel_datagen.directory_generator.filenames)))
 		for i, n in enumerate(validation_multilabel_datagen.directory_generator.filenames):
-		    key = int(n.split('/')[-1].replace('.jpg',''))
-		    accuracy_arr[i] = f1_score(np.asarray(validation_multilabel_datagen.photo_name_to_label_dict[key]),np.around(np.asarray(predict[i])))
+			key = int(n.split('/')[-1].replace('.jpg',''))
+			accuracy_arr[i] = f1_score(np.asarray(validation_multilabel_datagen.photo_name_to_label_dict[key]),np.around(np.asarray(predict[i])))
 		accuracy = np.mean(accuracy_arr)
 
 		utility.log("Validation - F1 Score: "+str(accuracy))
