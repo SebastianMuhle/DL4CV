@@ -7,6 +7,7 @@ from tensorflow.python.keras.layers import LSTM
 from tensorflow.python.keras.callbacks import ModelCheckpoint
 from keras.utils import np_utils
 
+
 learning_data_root = 'data/learning/'
 models_root = learning_data_root+'models/'
 photo_root = learning_data_root + 'photos/'

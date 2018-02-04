@@ -18,10 +18,6 @@ https://github.com/fchollet/deep-learning-with-python-notebooks/blob/master/5.3-
 CSV Import
 https://www.kaggle.com/dstraat/cnn-with-keras-and-augmented-images
 
-To Do:
-- input
-- tensorboard?
-- Set up Google cloud
-- Checkpoints/saving
-- (Predict input function)
-
+RNNs
+https://machinelearningmastery.com/text-generation-lstm-recurrent-neural-networks-python-keras/
+https://chunml.github.io/ChunML.github.io/project/Creating-Text-Generator-Using-Recurrent-Neural-Network/
