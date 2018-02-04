@@ -76,7 +76,7 @@ The folder structure should be like below:
 1. Run ```python3 train_inceptionv3.py``` command. After this command executes, there should be a ```weights_inceptionv3.hdf5``` file in your ```/data/learning/models/``` folder.
 2. Run ```python3 predict_inceptionv3.py``` command to get the predictions and F1-Scores for your training and validation data.
 
-####Training Xception
+#### Training Xception
 1. Run ```python3 train_xception.py``` command. After this command executes, there should be a ```weights_xception.hdf5``` file in your ```/data/learning/models/``` folder.
 2. Run ```python3 predict_xception.py``` command to get the predictions and F1-Scores for your training and validation data.
 
