@@ -32,15 +32,15 @@ def prediction_to_df(photo_to_prediction_dict,photo_to_business_dict,x_biz):
 		if (business_df.empty==False):
 			print(business)
 			predictions = np.asarray(list(business_df['prediction'].values))
-				prediction = np.around(np.sum(predictions,axis=0)/predictions.shape[0]).$
-				prediction_str = ''
-				for i in range(len(prediction)):
-					if prediction[i] == 1:
-						prediction_str += str(i)+" "
-				if prediction_str != '':
-					prediction_str = prediction_str[:-1]
-				print(prediction_str)
-				business_to_label_dict[business] = prediction_str
+			prediction = np.around(np.sum(predictions,axis=0)/predictions.shape[0]).tolist()
+			prediction_str = ''
+			for i in range(len(prediction)):
+				if prediction[i] == 1:
+					prediction_str += str(i)+" "
+			if prediction_str != '':
+				prediction_str = prediction_str[:-1]
+			print(prediction_str)
+			business_to_label_dict[business] = prediction_str
 	df = pd.DataFrame(list(business_to_label_dict.items()),columns=['business_id','labels'])
 	return df
 	
