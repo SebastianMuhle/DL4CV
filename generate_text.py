@@ -8,6 +8,6 @@ from tensorflow.python.keras.callbacks import ModelCheckpoint
 from keras.utils import np_utils
 from RNNTextGeneration import RNNTextGeneration
 
-predictions = np.array([1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+predictions = np.array([1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0])
 textGenerator = RNNTextGeneration()
 textGenerator.generate_text(predictions,0.5,1000)

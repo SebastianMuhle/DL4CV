@@ -37,8 +37,8 @@ class RNNTextGeneration:
     model.add(LSTM(hiddenDim))
     model.add(Dropout(dropoutRate))                 
     model.add(Dense(191, activation='softmax'))
-    model.load_weights(filename)
     model.compile(loss='categorical_crossentropy', optimizer='adam')
+    model.load_weights(filename)
 
     # Prediction text pieces
     predictionTextPieces = ["This place is really good for lunch. We had a great time. I would prefer everyone to lunch in this  ",
