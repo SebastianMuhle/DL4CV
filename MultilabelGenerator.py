@@ -15,7 +15,7 @@ class MultilabelGenerator:
         names_generator = self.grouper(self.batch_size, self.directory_generator.filenames)
         for (X_batch, _), names in zip(self.directory_generator, names_generator):
             names = [n.split('/')[-1].replace('.jpg','') for n in names]
-            if (self.train_or_valid == 'test'):
+            if (self.train_or_valid == 'test' || self.train_or_valid == 'demo'):
                 yield X_batch
             else:
                 targets = [self.photo_name_to_label_dict[int(x)] for x in names]

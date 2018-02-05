@@ -55,7 +55,7 @@ img_width, img_height = 299, 299
 img_shape = (img_width,img_height,3)
 
 #DL Parameters
-batch_size = 2
+batch_size = 6
 
 classes = ['good_for_lunch', 'good_for_dinner', 'takes_reservations', 'outdoor_seating', 'restaurant_is_expensive',
                'has_alcohol', 'has_table_service', 'ambience_is_classy', 'good_for_kids']
@@ -98,7 +98,7 @@ for num_freezed_layers in num_freezed_layers_array:
 
 		optimizerAdam = tf.keras.optimizers.Adam(lr=lr, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0,)
 
-		filepath=models_root+"weights_xception.hdf5"
+		filepath=models_root+"weights_xception_full.hdf5"
 
 		model = XCeptionModel().create_model(num_freezedLayers=num_freezed_layers, nb_classes=nb_classes,
                                                 optimizer=optimizerAdam)
