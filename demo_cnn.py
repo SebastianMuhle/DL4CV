@@ -84,7 +84,7 @@ test_multilabel_datagen = MultilabelGenerator(photo_root,
                                     None,
                                     batch_size=batch_size,
                                     target_size=(img_width,img_height),
-                                    train_or_valid='test')
+                                    train_or_valid='demo')
 
 test_generator = test_multilabel_datagen.flow()
 
