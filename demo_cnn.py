@@ -109,7 +109,7 @@ for num_freezed_layers in num_freezed_layers_array:
 
 		names = [int(n.split('/')[-1].replace('.jpg','')) for n in test_multilabel_datagen.directory_generator.filenames]
 
-		photo_to_prediction_dict = dict(zip(names,predictions))
+		photo_to_prediction_dict = dict(zip(names,np.around(np.asarray(predictions))))
 		df = pd.DataFrame(list(photo_to_prediction_dict.items()),columns=['photo_id','prediction'])
 		print(df)
 
