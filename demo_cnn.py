@@ -90,7 +90,7 @@ test_generator = test_multilabel_datagen.flow()
 
 # Hyperparameters
 num_freezed_layers_array =[311]
-learning_rates = [0.0001]
+learning_rates = [0.000]
 
 # Hyperparameter search
 for num_freezed_layers in num_freezed_layers_array:
@@ -100,10 +100,9 @@ for num_freezed_layers in num_freezed_layers_array:
 
 		filepath=models_root+"weights_xception_full.hdf5"
 
-		model = XCeptionModel().create_model(num_freezedLayers=num_freezed_layers, nb_classes=nb_classes,
-                                                optimizer=optimizerAdam)
+		model = load_model(filepath)
 
-		model.load_weights(filepath)
+		# model.load_weights(filepath)
 
 		predictions = model.predict_generator(test_generator, len(test_multilabel_datagen.directory_generator.filenames)/batch_size,verbose=1)
 
@@ -112,4 +111,5 @@ for num_freezed_layers in num_freezed_layers_array:
 		photo_to_prediction_dict = dict(zip(names,np.around(np.asarray(predictions))))
 		df = pd.DataFrame(list(photo_to_prediction_dict.items()),columns=['photo_id','prediction'])
 		print(df)
+		print(classes)
 

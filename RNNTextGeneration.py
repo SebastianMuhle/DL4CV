@@ -70,9 +70,11 @@ class RNNTextGeneration:
         pattern = [self.char_to_int[char] for char in sentence]
         generated_sentence = ''
         for i in range(length_of_sequence):
+            if i % 100 == 0:
+                print(i)
             x = np.reshape(pattern, (1, len(pattern), 1))
             x = x / float(self.n_vocab)
-            prediction = self.model.predict(x, verbose=1)
+            prediction = self.model.predict(x, verbose=0)
             index = np.argmax(prediction)
             result = self.int_to_char[index]
             seq_in = [self.int_to_char[value] for value in pattern]
