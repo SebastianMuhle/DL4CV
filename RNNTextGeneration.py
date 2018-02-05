@@ -30,7 +30,7 @@ class RNNTextGeneration:
     hiddenDim = 256
 
     # load the network weights
-    filename = models_root+"rnn_2.hdf5"
+    filename = models_root+"rnn.hdf5"
     model = Sequential()
     model.add(LSTM(hiddenDim, input_shape=(100, 1), return_sequences=True))
     model.add(Dropout(dropoutRate))

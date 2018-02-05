@@ -76,7 +76,7 @@ model.compile(loss='categorical_crossentropy', optimizer=optimizerAdam)
 
 # define the checkpoint #get the hyperparamters info into the saveString (see my save string func in
 # utility
-filepath=models_root+"rnn_2.hdf5"
+filepath=models_root+"rnn.hdf5"
 
 checkpoint = ModelCheckpoint(filepath, monitor='loss', verbose=1, save_best_only=True, mode='min')
 callbacks_list = [checkpoint]
