@@ -110,7 +110,6 @@ for num_freezed_layers in num_freezed_layers_array:
 		names = [int(n.split('/')[-1].replace('.jpg','')) for n in test_multilabel_datagen.directory_generator.filenames]
 
 		photo_to_prediction_dict = dict(zip(names,predictions))
+		df = pd.DataFrame(list(photo_to_prediction_dict.items()),columns=['photo_id','prediction'])
+		print(df)
 
-		print("Prediction part is finished.")
-
-		prediction_to_df(photo_to_prediction_dict,photo_to_business_dict,x_biz).to_csv(demo_data_root+"results.csv",index=False)
